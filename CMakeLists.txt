@@ -44,7 +44,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS TRUE)
 # I use this to make development easier.
 # This lets a user create a new file and it will be automatically compiled.
 # Get all the files needed for the library
-file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS "src/OneLibrary/*.cpp")
+file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS "src/OneLibrary/*.cpp" "include/OneLibrary/*.h")
 
 # Let's only add 'Backward-CPP' if we are running a debug build
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
