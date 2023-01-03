@@ -36,3 +36,10 @@ Read more about which dependency was chosen [here](docs/testing_frameworks.md)
 
 # Projects Using This Library
 - To add your project to this list, [create a PR!](https://github.com/szymonj99/OneLibrary/compare) 👍
+
+# Developing With Local Changes
+If you want to make changes to this library, you can test these changes locally.
+For example, if you have a project that uses this as a dependency through [CPM](https://github.com/cpm-cmake/CPM.cmake), you can instead do the following:
+1. `git clone git@github.com:szymonj99/OneLibrary.git` one level up from your current project
+2. Add `CPMAddPackage(NAME OneLibrary PATHS ../OneLibrary)` to your `CMakeLists.txt` to add in the dependency from local files.
+For further information, see [this](https://github.com/szymonj99/OneControl/blob/main/CMakeLists.txt).
