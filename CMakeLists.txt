@@ -17,6 +17,8 @@ if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug)
 endif()
 
+option(COMPILE_WITH_BACKWARDCPP "Compile OneLibrary including Backward-CPP (only active in `Debug` mode)" FALSE)
+
 # Get CPM
 include(cmake/GetCPMConfig.cmake)
 include(GNUInstallDirs)
@@ -47,7 +49,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS TRUE)
 file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS "src/OneLibrary/*.cpp" "include/OneLibrary/*.h")
 
 # Let's only add 'Backward-CPP' if we are running a debug build
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+if(COMPILE_WITH_BACKWARDCPP AND CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Adding in Backward-CPP to ${PROJECT_NAME}")
     CPMAddPackage("gh:bombela/backward-cpp#90398eef20f4e7e0e939322d7e84f9c52078a325")
     # packagename_SOURCE_DIR is provided here by CPM (I suppose it uses FetchPackage under the hood which actually gives us the definitions for the packages, similar to NuGet in C# :thumbs_up: )
