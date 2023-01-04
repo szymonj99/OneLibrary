@@ -5,7 +5,8 @@ set(LIBRARY_VERSION 0.0.1)
 
 project(${LIBRARY_NAME} LANGUAGES CXX VERSION ${LIBRARY_VERSION} DESCRIPTION "OneLibrary - Cross-Platform Input Hooking")
 
-option(PACKAGE_TESTS "Build the tests" FALSE)
+option(ONELIBRARY_BUILD_TESTS "Build the tests" FALSE)
+option(ONELIBRARY_USE_BACKWARDCPP "Compile OneLibrary including Backward-CPP (only active in `Debug` mode)" TRUE)
 
 if(CMAKE_HOST_UNIX AND NOT CMAKE_HOST_APPLE)
     set(CMAKE_HOST_LINUX TRUE)
@@ -16,8 +17,6 @@ if (NOT CMAKE_BUILD_TYPE)
     message("Build Type not set, defaulting to Debug...")
     set(CMAKE_BUILD_TYPE Debug)
 endif()
-
-option(COMPILE_WITH_BACKWARDCPP "Compile OneLibrary including Backward-CPP (only active in `Debug` mode)" FALSE)
 
 # Get CPM
 include(cmake/GetCPMConfig.cmake)
@@ -49,7 +48,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS TRUE)
 file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS "src/OneLibrary/*.cpp" "include/OneLibrary/*.h")
 
 # Let's only add 'Backward-CPP' if we are running a debug build
-if(COMPILE_WITH_BACKWARDCPP AND CMAKE_BUILD_TYPE STREQUAL "Debug")
+if(ONELIBRARY_USE_BACKWARDCPP AND CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Adding in Backward-CPP to ${PROJECT_NAME}")
     CPMAddPackage("gh:bombela/backward-cpp#90398eef20f4e7e0e939322d7e84f9c52078a325")
     # packagename_SOURCE_DIR is provided here by CPM (I suppose it uses FetchPackage under the hood which actually gives us the definitions for the packages, similar to NuGet in C# :thumbs_up: )
