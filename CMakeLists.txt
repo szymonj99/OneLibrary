@@ -32,16 +32,6 @@ set(CMAKE_BUILD_PARALLEL_LEVEL 8)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS TRUE)
 
-# Adding in CPM dependencies
-# TODO: Should this go here or in OneControl?
-## Argument parsing
-### Which one should I pick?
-#CPMAddPackage("gh:Taywee/args#11016849db5fdeceb5bf3550ac7f0ada1ce2419c")
-#CPMAddPackage("gh:p-ranav/argparse#af0f7cb25f9144499854e1874410fbc288b36fa4")
-#CPMAddPackage("gh:badaix/popl#bda5f43099d67419089a44c9e54474e4998a9a26")
-#CPMAddPackage("gh:SFML/sfml#fd1435d1c04750893369067d75e0f667a88e0f6c")
-#CPMAddPackage("gh:fmtlib/fmt#7e5a9595648f4643cd81eed83792ca93bf3b75c3")
-
 # I use this to make development easier.
 # This lets a user create a new file and it will be automatically compiled.
 # Get all the files needed for the library
