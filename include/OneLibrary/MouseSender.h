@@ -3,6 +3,7 @@
 #ifdef OS_WINDOWS
 #include <Windows.h>
 #include <hidusage.h>
+#include <OneLibrary/MessageTimer.h>
 #elif OS_LINUX
 #include <linux/uinput.h>
 #include <linux/input.h>
@@ -26,6 +27,7 @@ namespace ol
 	{
 	private:
 #ifdef OS_WINDOWS
+        std::unique_ptr<ol::MessageTimer> m_pTimer = nullptr;
 		HHOOK m_pHook = nullptr;
 		void m_StartHook();
 		void m_EndHook();

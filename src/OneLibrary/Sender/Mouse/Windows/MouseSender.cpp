@@ -10,8 +10,10 @@ ol::MouseSender::MouseSender()
 void ol::MouseSender::m_StartHook()
 {
 	MSG msg;
-	PeekMessage(&msg, 0, WM_USER, WM_USER, PM_NOREMOVE); // Force the system to create a message queue.
-	m_pHook = SetWindowsHookEx(WH_MOUSE_LL, &ol::MouseSender::HookProc, 0, 0);
+	PeekMessage(&msg, nullptr, WM_USER, WM_USER, PM_NOREMOVE); // Force the system to create a message queue.
+	m_pHook = SetWindowsHookEx(WH_MOUSE_LL, &ol::MouseSender::HookProc, nullptr, 0);
+    // This will also act as a keep alive "feature".
+    this->m_pTimer = std::make_unique<ol::MessageTimer>(ol::kTimerTimeout, ol::eThreadMessages::Mouse, GetCurrentThreadId());
 }
 
 ol::MouseSender::~MouseSender()

@@ -3,6 +3,7 @@
 #ifdef OS_WINDOWS
     #include <Windows.h>
     #include <hidusage.h>
+    #include <OneLibrary/MessageTimer.h>
 #elif OS_LINUX
     #include <linux/uinput.h>
     #include <linux/input.h>
@@ -29,6 +30,7 @@ namespace ol
 		bool m_bAllowConsuming = false;
 
 		// These hook functions are used when we are using low level hooks.
+        std::unique_ptr<ol::MessageTimer> m_pTimer = nullptr;
 		HHOOK m_pHook = nullptr;
 		void m_StartHook();
         ol::Input m_GetHookData();
