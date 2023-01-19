@@ -35,7 +35,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS TRUE)
 # I use this to make development easier.
 # This lets a user create a new file and it will be automatically compiled.
 # Get all the files needed for the library
-file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS "src/OneLibrary/*.cpp" "include/OneLibrary/*.h")
+file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/src/OneLibrary/*.cpp" "${PROJECT_SOURCE_DIR}/include/OneLibrary/*.h")
 
 # Let's only add 'Backward-CPP' if we are running a debug build
 if(ONELIBRARY_USE_BACKWARDCPP AND CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -48,9 +48,14 @@ else()
     add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
 endif()
 
-target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}> ${CMAKE_CURRENT_SOURCE_DIR}/include)
+# I'll do more research as to what this actually does.
+target_include_directories(${PROJECT_NAME}
+        PUBLIC
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+        ${PROJECT_SOURCE_DIR}/include)
 
-file(GLOB_RECURSE PUBLIC_HEADERS CONFIGURE_DEPENDS "include/*.h")
+file(GLOB_RECURSE PUBLIC_HEADERS CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/include/*.h")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${PUBLIC_HEADERS}")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "Debug")
 
@@ -79,12 +84,12 @@ else()
 endif()
 
 #install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}Targets PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME} INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-install(TARGETS ${PROJECT_NAME} PUBLIC_HEADER DESTINATION include)
+install(TARGETS ${PROJECT_NAME} PUBLIC_HEADER DESTINATION "${PROJECT_SOURCE_DIR}/include")
 
 if(PACKAGE_TESTS)
     # enable_testing() needs to be here.
     # Reasoning: https://stackoverflow.com/questions/64099136/visual-studio-2019-test-explorer-did-not-find-c-google-tests
     message(STATUS "Adding tests")
     enable_testing()
-    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tests)
+    add_subdirectory("${PROJECT_SOURCE_DIR}/tests")
 endif()

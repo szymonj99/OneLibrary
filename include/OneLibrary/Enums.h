@@ -4,25 +4,30 @@
 
 namespace ol
 {
-	enum class eInputType : uint32_t
+    // On Windows, this is used to know what type of messages we get from hooks.
+	enum class eInputType : uint8_t
 	{
-		Uninitialised = 0,
-		KeepAlive,
-		Mouse,
-		Keyboard,
-		Failed,
-		HookStopped
+        // In the future, we could implement something like `gamepad`, `steering wheel`, `bluetooth controller` etc.
+		None = 0,
+        Mouse,
+		Keyboard
 	};
 
-#ifdef OS_WINDOWS
-    #define WM_USER 0x0400
-    #define WM_APP  0x8000
-	enum class eThreadMessages : uint32_t
-	{
-	    Empty = WM_APP + 1,
-	    Mouse,
-	    Keyboard,
-	    KeepAlive
-	};
-#endif
+    // The problem:
+    // A user can click and hold a button.
+    // Therefore, we need separate events for when a button is clicked and when it is released
+    enum class eEventType : uint8_t
+    {
+        None = 0,
+        MMove,
+        MButtonLeftDown,
+        MButtonLeftUp,
+        MButtonRightDown,
+        MButtonRightUp,
+        MButtonMiddleDown,
+        MButtonMiddleUp,
+        MScroll,
+        KBKeyDown,
+        KBKeyUp
+    };
 }
