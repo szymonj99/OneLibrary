@@ -2,7 +2,8 @@
 OneLibrary is a C++ library that allows you to more easily create applications that interact with user input.
 
 # Examples
-See [examples](examples).
+See [examples](docs/examples).
+TODO: Add examples here as well as the docs.
 
 # How To Use
 - Using [CPM](https://github.com/cpm-cmake/CPM.cmake) by adding `CPMAddPackage("gh:szymonj99/OneLibrary#{COMMIT_HASH_HERE}")`
