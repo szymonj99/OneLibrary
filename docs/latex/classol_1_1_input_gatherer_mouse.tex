@@ -1,0 +1,76 @@
+\hypertarget{classol_1_1_input_gatherer_mouse}{}\doxysection{ol\+::Input\+Gatherer\+Mouse Class Reference}
+\label{classol_1_1_input_gatherer_mouse}\index{ol::InputGathererMouse@{ol::InputGathererMouse}}
+
+
+{\ttfamily \#include $<$Input\+Gatherer\+Mouse.\+h$>$}
+
+Inheritance diagram for ol\+::Input\+Gatherer\+Mouse\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classol_1_1_input_gatherer_mouse}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classol_1_1_input_gatherer_mouse_af4df6aac7a11d66b073d4ff6c2fc774b}{Input\+Gatherer\+Mouse}} (const bool k\+Allow\+Consuming=true)
+\item 
+\mbox{\hyperlink{structol_1_1_input}{ol\+::\+Input}} \mbox{\hyperlink{classol_1_1_input_gatherer_mouse_a322b773b8e19b302970f2044c73f94f4}{Gather\+Input}} () override
+\end{DoxyCompactItemize}
+\begin{DoxyCompactItemize}
+\item 
+virtual \mbox{\hyperlink{structol_1_1_input}{ol\+::\+Input}} \mbox{\hyperlink{classol_1_1_input_gatherer_a381f0ac96d5ced8bcbd978a7fe82ed50}{Gather\+Input}} ()=0
+\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+\doxysubsubsection*{Protected Member Functions inherited from \mbox{\hyperlink{classol_1_1_input_gatherer}{ol\+::\+Input\+Gatherer}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classol_1_1_input_gatherer_aaa7c928fe8017d6461d7764f21e52b82}{Input\+Gatherer}} (const bool k\+Allow\+Consuming=true)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes inherited from \mbox{\hyperlink{classol_1_1_input_gatherer}{ol\+::\+Input\+Gatherer}}}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{classol_1_1_input_gatherer_ab0185c3b28377bdf2c11f2e69d88970a}{m\+\_\+b\+Allow\+Consuming}} = true
+\item 
+bool \mbox{\hyperlink{classol_1_1_input_gatherer_ad116c2b24ac6d7d772197656b1117ecd}{m\+\_\+b\+Consuming}} = true
+\item 
+\mbox{\hyperlink{classol_1_1_threadsafe_queue}{ol\+::\+Threadsafe\+Queue}}$<$ \mbox{\hyperlink{structol_1_1_input}{ol\+::\+Input}} $>$ \mbox{\hyperlink{classol_1_1_input_gatherer_af39da7f231f8cc213e3f9cb94ea0ce23}{m\+\_\+buf\+Inputs}} \{\}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+This gathers mouse input events. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classol_1_1_input_gatherer_mouse_af4df6aac7a11d66b073d4ff6c2fc774b}\label{classol_1_1_input_gatherer_mouse_af4df6aac7a11d66b073d4ff6c2fc774b}} 
+\index{ol::InputGathererMouse@{ol::InputGathererMouse}!InputGathererMouse@{InputGathererMouse}}
+\index{InputGathererMouse@{InputGathererMouse}!ol::InputGathererMouse@{ol::InputGathererMouse}}
+\doxysubsubsection{\texorpdfstring{InputGathererMouse()}{InputGathererMouse()}}
+{\footnotesize\ttfamily ol\+::\+Input\+Gatherer\+Mouse\+::\+Input\+Gatherer\+Mouse (\begin{DoxyParamCaption}\item[{const bool}]{k\+Allow\+Consuming = {\ttfamily true} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [explicit]}}
+
+Create a new input gatherer for mouse events. 
+\begin{DoxyParams}{Parameters}
+{\em k\+Allow\+Consuming} & If true, the gatherer can be set to consume the events, meaning the event will not be passed to other windows or hooks. \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classol_1_1_input_gatherer_mouse_a322b773b8e19b302970f2044c73f94f4}\label{classol_1_1_input_gatherer_mouse_a322b773b8e19b302970f2044c73f94f4}} 
+\index{ol::InputGathererMouse@{ol::InputGathererMouse}!GatherInput@{GatherInput}}
+\index{GatherInput@{GatherInput}!ol::InputGathererMouse@{ol::InputGathererMouse}}
+\doxysubsubsection{\texorpdfstring{GatherInput()}{GatherInput()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structol_1_1_input}{ol\+::\+Input}} ol\+::\+Input\+Gatherer\+Mouse\+::\+Gather\+Input (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+Block until this object gathered some input from the user. \begin{DoxyReturn}{Returns}
+The input representative of the event that has happened. 
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{classol_1_1_input_gatherer_a381f0ac96d5ced8bcbd978a7fe82ed50}{ol\+::\+Input\+Gatherer}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/\+One\+Library/Input\+Gatherer\+Mouse.\+h\end{DoxyCompactItemize}

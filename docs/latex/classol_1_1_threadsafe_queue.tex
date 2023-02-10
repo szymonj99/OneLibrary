@@ -1,0 +1,53 @@
+\hypertarget{classol_1_1_threadsafe_queue}{}\doxysection{ol\+::Threadsafe\+Queue\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>} Class Template Reference}
+\label{classol_1_1_threadsafe_queue}\index{ol::ThreadsafeQueue$<$ T $>$@{ol::ThreadsafeQueue$<$ T $>$}}
+
+
+{\ttfamily \#include $<$Threadsafe\+Queue.\+h$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+T \mbox{\hyperlink{classol_1_1_threadsafe_queue_abc1b5b05ef632c3b1467345663f2ce88}{Get}} () noexcept
+\item 
+void \mbox{\hyperlink{classol_1_1_threadsafe_queue_a1be2225eb33380c2090a5c983eebe7de}{Add}} (const T item) noexcept
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$\newline
+class ol\+::\+Threadsafe\+Queue$<$ T $>$}
+A thread-\/safe wrapper around std\+::queue, which can act as a buffer in a producer-\/consumer scenario. This is a First-\/\+In-\/\+First-\/\+Out ({\ttfamily FIFO}) data structure. 
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of value stored. \\
+\hline
+\end{DoxyTemplParams}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classol_1_1_threadsafe_queue_a1be2225eb33380c2090a5c983eebe7de}\label{classol_1_1_threadsafe_queue_a1be2225eb33380c2090a5c983eebe7de}} 
+\index{ol::ThreadsafeQueue$<$ T $>$@{ol::ThreadsafeQueue$<$ T $>$}!Add@{Add}}
+\index{Add@{Add}!ol::ThreadsafeQueue$<$ T $>$@{ol::ThreadsafeQueue$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Add()}{Add()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void \mbox{\hyperlink{classol_1_1_threadsafe_queue}{ol\+::\+Threadsafe\+Queue}}$<$ T $>$\+::\+Add (\begin{DoxyParamCaption}\item[{const T}]{item }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+Add an item to the queue. In theory, running out of space is highly unlikely. 
+\begin{DoxyParams}{Parameters}
+{\em item} & The item/value to be added to the queue. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classol_1_1_threadsafe_queue_abc1b5b05ef632c3b1467345663f2ce88}\label{classol_1_1_threadsafe_queue_abc1b5b05ef632c3b1467345663f2ce88}} 
+\index{ol::ThreadsafeQueue$<$ T $>$@{ol::ThreadsafeQueue$<$ T $>$}!Get@{Get}}
+\index{Get@{Get}!ol::ThreadsafeQueue$<$ T $>$@{ol::ThreadsafeQueue$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Get()}{Get()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+T \mbox{\hyperlink{classol_1_1_threadsafe_queue}{ol\+::\+Threadsafe\+Queue}}$<$ T $>$\+::\+Get (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+Blocks until a value can be retrieved from the queue. \begin{DoxyReturn}{Returns}
+A value/item that has been popped from the queue. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/\+One\+Library/Threadsafe\+Queue.\+h\end{DoxyCompactItemize}

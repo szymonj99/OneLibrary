@@ -1,0 +1,76 @@
+\hypertarget{classol_1_1_input_gatherer_keyboard}{}\doxysection{ol\+::Input\+Gatherer\+Keyboard Class Reference}
+\label{classol_1_1_input_gatherer_keyboard}\index{ol::InputGathererKeyboard@{ol::InputGathererKeyboard}}
+
+
+{\ttfamily \#include $<$Input\+Gatherer\+Keyboard.\+h$>$}
+
+Inheritance diagram for ol\+::Input\+Gatherer\+Keyboard\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classol_1_1_input_gatherer_keyboard}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classol_1_1_input_gatherer_keyboard_a5b348f1fca2d9d2b117bae839fc48cd5}{Input\+Gatherer\+Keyboard}} (const bool k\+Allow\+Consuming=true)
+\item 
+\mbox{\hyperlink{structol_1_1_input}{ol\+::\+Input}} \mbox{\hyperlink{classol_1_1_input_gatherer_keyboard_af2dea3c39bf8a31bf9003a17326b6b83}{Gather\+Input}} () override
+\end{DoxyCompactItemize}
+\begin{DoxyCompactItemize}
+\item 
+virtual \mbox{\hyperlink{structol_1_1_input}{ol\+::\+Input}} \mbox{\hyperlink{classol_1_1_input_gatherer_a381f0ac96d5ced8bcbd978a7fe82ed50}{Gather\+Input}} ()=0
+\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+\doxysubsubsection*{Protected Member Functions inherited from \mbox{\hyperlink{classol_1_1_input_gatherer}{ol\+::\+Input\+Gatherer}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classol_1_1_input_gatherer_aaa7c928fe8017d6461d7764f21e52b82}{Input\+Gatherer}} (const bool k\+Allow\+Consuming=true)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes inherited from \mbox{\hyperlink{classol_1_1_input_gatherer}{ol\+::\+Input\+Gatherer}}}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{classol_1_1_input_gatherer_ab0185c3b28377bdf2c11f2e69d88970a}{m\+\_\+b\+Allow\+Consuming}} = true
+\item 
+bool \mbox{\hyperlink{classol_1_1_input_gatherer_ad116c2b24ac6d7d772197656b1117ecd}{m\+\_\+b\+Consuming}} = true
+\item 
+\mbox{\hyperlink{classol_1_1_threadsafe_queue}{ol\+::\+Threadsafe\+Queue}}$<$ \mbox{\hyperlink{structol_1_1_input}{ol\+::\+Input}} $>$ \mbox{\hyperlink{classol_1_1_input_gatherer_af39da7f231f8cc213e3f9cb94ea0ce23}{m\+\_\+buf\+Inputs}} \{\}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+This gathers keyboard input events. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classol_1_1_input_gatherer_keyboard_a5b348f1fca2d9d2b117bae839fc48cd5}\label{classol_1_1_input_gatherer_keyboard_a5b348f1fca2d9d2b117bae839fc48cd5}} 
+\index{ol::InputGathererKeyboard@{ol::InputGathererKeyboard}!InputGathererKeyboard@{InputGathererKeyboard}}
+\index{InputGathererKeyboard@{InputGathererKeyboard}!ol::InputGathererKeyboard@{ol::InputGathererKeyboard}}
+\doxysubsubsection{\texorpdfstring{InputGathererKeyboard()}{InputGathererKeyboard()}}
+{\footnotesize\ttfamily ol\+::\+Input\+Gatherer\+Keyboard\+::\+Input\+Gatherer\+Keyboard (\begin{DoxyParamCaption}\item[{const bool}]{k\+Allow\+Consuming = {\ttfamily true} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [explicit]}}
+
+Create an input gatherer responsible for gathering keyboard input events. 
+\begin{DoxyParams}{Parameters}
+{\em k\+Allow\+Consuming} & If true, this gatherer is allowed to consume input events. \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classol_1_1_input_gatherer_keyboard_af2dea3c39bf8a31bf9003a17326b6b83}\label{classol_1_1_input_gatherer_keyboard_af2dea3c39bf8a31bf9003a17326b6b83}} 
+\index{ol::InputGathererKeyboard@{ol::InputGathererKeyboard}!GatherInput@{GatherInput}}
+\index{GatherInput@{GatherInput}!ol::InputGathererKeyboard@{ol::InputGathererKeyboard}}
+\doxysubsubsection{\texorpdfstring{GatherInput()}{GatherInput()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structol_1_1_input}{ol\+::\+Input}} ol\+::\+Input\+Gatherer\+Keyboard\+::\+Gather\+Input (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+Blocks until a keyboard event happens. \begin{DoxyReturn}{Returns}
+An input object representative of the event. 
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{classol_1_1_input_gatherer_a381f0ac96d5ced8bcbd978a7fe82ed50}{ol\+::\+Input\+Gatherer}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/\+One\+Library/Input\+Gatherer\+Keyboard.\+h\end{DoxyCompactItemize}

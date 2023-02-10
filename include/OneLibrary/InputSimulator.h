@@ -21,13 +21,19 @@
 
 namespace ol
 {
-class InputSimulator
-{
-protected:
-    InputSimulator() = default;
-    ~InputSimulator() = default;
+    /**
+     * A base class that allows for injection of input programmatically.
+     */
+    class InputSimulator
+    {
+    protected:
+        InputSimulator() = default;
+        ~InputSimulator() = default;
 
-public:
-    virtual void PerformInput(const ol::Input& kInput) = 0;
-};
+    public:
+        /**
+         * Each class that inherits from this base class needs to implement their own way of handling an input that has been received.
+         */
+        virtual void PerformInput(const ol::Input& kInput) = 0;
+    };
 }

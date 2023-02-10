@@ -1,0 +1,45 @@
+\hypertarget{_input_gatherer_keyboard_8h_source}{}\doxysection{Input\+Gatherer\+Keyboard.\+h}
+\label{_input_gatherer_keyboard_8h_source}\index{include/OneLibrary/InputGathererKeyboard.h@{include/OneLibrary/InputGathererKeyboard.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <OneLibrary/InputGatherer.h>}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{keyword}{namespace\ }ol}
+\DoxyCodeLine{00006\ \{}
+\DoxyCodeLine{00010\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classol_1_1_input_gatherer_keyboard}{InputGathererKeyboard}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classol_1_1_input_gatherer}{ol::InputGatherer}}}
+\DoxyCodeLine{00011\ \ \ \ \ \{}
+\DoxyCodeLine{00012\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00013\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \mbox{\hyperlink{classol_1_1_threadsafe_queue}{ol::ThreadsafeQueue<ol::Input>}}\ m\_bufInputs\{\};}
+\DoxyCodeLine{00014\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ m\_bConsuming\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#ifdef\ OS\_WINDOWS}}
+\DoxyCodeLine{00017\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ To\ avoid\ potential\ issues\ with\ calling\ virtual\ functions\ in\ the\ destructor,\ e\ can\ instead}}
+\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ call\ these\ functions\ which\ will\ only\ be\ defined\ in\ the\ current\ derived\ class\ and\ not\ in\ the\ base\ class.}}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ These\ are\ currently\ only\ called\ on\ Windows.}}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Do\ \_NOT\_\ call\ these\ by\ yourself.}}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \_init();}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \_terminate();}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ m\_StartHook()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ m\_WaitForLowLevelHook()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ m\_EndHook()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ m\_StartRawInput()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ m\_WaitForRawInput()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ m\_EndRawInput()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ This\ is\ what's\ called\ every\ time\ a\ low-\/level\ mouse\ event\ happens.}}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ LRESULT\ CALLBACK\ LowLevelHookProcedure(\textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ nCode,\ \textcolor{keyword}{const}\ WPARAM\ wParam,\ \textcolor{keyword}{const}\ LPARAM\ lParam);}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ This\ is\ what's\ called\ every\ time\ a\ raw\ input\ event\ happens.}}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ LRESULT\ CALLBACK\ RawInputProcedure(\textcolor{keyword}{const}\ HWND\ hWnd,\ \textcolor{keyword}{const}\ UINT\ message,\ \textcolor{keyword}{const}\ WPARAM\ wParam,\ \textcolor{keyword}{const}\ LPARAM\ lParam);}
+\DoxyCodeLine{00036\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classol_1_1_input_gatherer_keyboard_a5b348f1fca2d9d2b117bae839fc48cd5}{InputGathererKeyboard}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{bool}\ kAllowConsuming\ =\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classol_1_1_input_gatherer_keyboard}{\string~InputGathererKeyboard}}();}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structol_1_1_input}{ol::Input}}\ \mbox{\hyperlink{classol_1_1_input_gatherer_keyboard_af2dea3c39bf8a31bf9003a17326b6b83}{GatherInput}}()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00049\ \ \ \ \ \};}
+\DoxyCodeLine{00050\ \}}
+
+\end{DoxyCode}

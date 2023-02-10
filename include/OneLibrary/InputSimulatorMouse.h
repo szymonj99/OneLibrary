@@ -4,11 +4,14 @@
 
 namespace ol
 {
-class InputSimulatorMouse : public ol::InputSimulator
-{
-public:
-    InputSimulatorMouse() = default;
-    ~InputSimulatorMouse() = default;
-    void PerformInput(const ol::Input& kInput) override;
-};
+    /**
+     * This allows for injecting of mouse events.
+     */
+    class InputSimulatorMouse : public ol::InputSimulator
+    {
+    public:
+        InputSimulatorMouse() = default;
+        ~InputSimulatorMouse() = default;
+        void PerformInput(const ol::Input& kInput) override;
+    };
 }

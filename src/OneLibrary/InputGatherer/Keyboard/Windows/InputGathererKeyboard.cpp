@@ -2,6 +2,10 @@
 
 #include <OneLibrary/InputGathererKeyboard.h>
 
+/**
+ * Create an InputGatherer responsible for gathering input from the keyboard.
+ * @param allowConsuming Specifies if the InputGatherer can consume input and prevent it from being passed further, or not.
+ */
 ol::InputGathererKeyboard::InputGathererKeyboard(const bool allowConsuming)
 {
 	this->m_bAllowConsuming = allowConsuming;

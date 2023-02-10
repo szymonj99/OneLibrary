@@ -1,0 +1,39 @@
+\hypertarget{_enums_8h_source}{}\doxysection{Enums.\+h}
+\label{_enums_8h_source}\index{include/OneLibrary/Enums.h@{include/OneLibrary/Enums.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{keyword}{namespace\ }ol}
+\DoxyCodeLine{00006\ \{}
+\DoxyCodeLine{00007\ \ \ \ \ \textcolor{comment}{//\ On\ Windows,\ this\ is\ used\ to\ know\ what\ type\ of\ messages\ we\ get\ from\ hooks.}}
+\DoxyCodeLine{00008\ \ \ \ \ \textcolor{keyword}{enum\ class}\ eInputType\ :\ uint8\_t}
+\DoxyCodeLine{00009\ \ \ \ \ \{}
+\DoxyCodeLine{00010\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ In\ the\ future,\ we\ could\ implement\ something\ like\ `gamepad`,\ `steering\ wheel`,\ `bluetooth\ controller`\ etc.}}
+\DoxyCodeLine{00011\ \ \ \ \ \ \ \ \ None\ =\ 0,}
+\DoxyCodeLine{00012\ \ \ \ \ \ \ \ \ Mouse,}
+\DoxyCodeLine{00013\ \ \ \ \ \ \ \ \ Keyboard}
+\DoxyCodeLine{00014\ \ \ \ \ \};}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \ \ \ \ \textcolor{comment}{//\ The\ problem:}}
+\DoxyCodeLine{00017\ \ \ \ \ \textcolor{comment}{//\ A\ user\ can\ click\ and\ hold\ a\ button.}}
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{comment}{//\ Therefore,\ we\ need\ separate\ events\ for\ when\ a\ button\ is\ clicked\ and\ when\ it\ is\ released}}
+\DoxyCodeLine{00019\ \ \ \ \ \textcolor{keyword}{enum\ class}\ eEventType\ :\ uint8\_t}
+\DoxyCodeLine{00020\ \ \ \ \ \{}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ None\ =\ 0,}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ MMove,}
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ MButtonLeftDown,}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ MButtonLeftUp,}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ MButtonRightDown,}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ MButtonRightUp,}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ MButtonMiddleDown,}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ MButtonMiddleUp,}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ MScroll,}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ KBKeyDown,}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ KBKeyUp}
+\DoxyCodeLine{00032\ \ \ \ \ \};}
+\DoxyCodeLine{00033\ \}}
+
+\end{DoxyCode}
