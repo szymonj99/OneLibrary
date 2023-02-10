@@ -1,0 +1,90 @@
+\hypertarget{classol_1_1_input_gatherer}{}\doxysection{ol\+::Input\+Gatherer Class Reference}
+\label{classol_1_1_input_gatherer}\index{ol::InputGatherer@{ol::InputGatherer}}
+
+
+{\ttfamily \#include $<$Input\+Gatherer.\+h$>$}
+
+Inheritance diagram for ol\+::Input\+Gatherer\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classol_1_1_input_gatherer}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual \mbox{\hyperlink{structol_1_1_input}{ol\+::\+Input}} \mbox{\hyperlink{classol_1_1_input_gatherer_a381f0ac96d5ced8bcbd978a7fe82ed50}{Gather\+Input}} ()=0
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classol_1_1_input_gatherer_aaa7c928fe8017d6461d7764f21e52b82}{Input\+Gatherer}} (const bool k\+Allow\+Consuming=true)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{classol_1_1_input_gatherer_ab0185c3b28377bdf2c11f2e69d88970a}{m\+\_\+b\+Allow\+Consuming}} = true
+\item 
+bool \mbox{\hyperlink{classol_1_1_input_gatherer_ad116c2b24ac6d7d772197656b1117ecd}{m\+\_\+b\+Consuming}} = true
+\item 
+\mbox{\hyperlink{classol_1_1_threadsafe_queue}{ol\+::\+Threadsafe\+Queue}}$<$ \mbox{\hyperlink{structol_1_1_input}{ol\+::\+Input}} $>$ \mbox{\hyperlink{classol_1_1_input_gatherer_af39da7f231f8cc213e3f9cb94ea0ce23}{m\+\_\+buf\+Inputs}} \{\}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+The base class that other gatherers inherit from. How this works differs per platform, but the end result is consistent between platforms. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classol_1_1_input_gatherer_aaa7c928fe8017d6461d7764f21e52b82}\label{classol_1_1_input_gatherer_aaa7c928fe8017d6461d7764f21e52b82}} 
+\index{ol::InputGatherer@{ol::InputGatherer}!InputGatherer@{InputGatherer}}
+\index{InputGatherer@{InputGatherer}!ol::InputGatherer@{ol::InputGatherer}}
+\doxysubsubsection{\texorpdfstring{InputGatherer()}{InputGatherer()}}
+{\footnotesize\ttfamily ol\+::\+Input\+Gatherer\+::\+Input\+Gatherer (\begin{DoxyParamCaption}\item[{const bool}]{k\+Allow\+Consuming = {\ttfamily true} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}}
+
+Constructor for an abstract base class. Do not call this. 
+\begin{DoxyParams}{Parameters}
+{\em k\+Allow\+Consuming} & Unused \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classol_1_1_input_gatherer_a381f0ac96d5ced8bcbd978a7fe82ed50}\label{classol_1_1_input_gatherer_a381f0ac96d5ced8bcbd978a7fe82ed50}} 
+\index{ol::InputGatherer@{ol::InputGatherer}!GatherInput@{GatherInput}}
+\index{GatherInput@{GatherInput}!ol::InputGatherer@{ol::InputGatherer}}
+\doxysubsubsection{\texorpdfstring{GatherInput()}{GatherInput()}}
+{\footnotesize\ttfamily virtual \mbox{\hyperlink{structol_1_1_input}{ol\+::\+Input}} ol\+::\+Input\+Gatherer\+::\+Gather\+Input (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+Block until this object gathered some input from the user. \begin{DoxyReturn}{Returns}
+The input representative of the event that has happened. 
+\end{DoxyReturn}
+
+
+Implemented in \mbox{\hyperlink{classol_1_1_input_gatherer_keyboard_af2dea3c39bf8a31bf9003a17326b6b83}{ol\+::\+Input\+Gatherer\+Keyboard}}, and \mbox{\hyperlink{classol_1_1_input_gatherer_mouse_a322b773b8e19b302970f2044c73f94f4}{ol\+::\+Input\+Gatherer\+Mouse}}.
+
+
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{classol_1_1_input_gatherer_ab0185c3b28377bdf2c11f2e69d88970a}\label{classol_1_1_input_gatherer_ab0185c3b28377bdf2c11f2e69d88970a}} 
+\index{ol::InputGatherer@{ol::InputGatherer}!m\_bAllowConsuming@{m\_bAllowConsuming}}
+\index{m\_bAllowConsuming@{m\_bAllowConsuming}!ol::InputGatherer@{ol::InputGatherer}}
+\doxysubsubsection{\texorpdfstring{m\_bAllowConsuming}{m\_bAllowConsuming}}
+{\footnotesize\ttfamily bool ol\+::\+Input\+Gatherer\+::m\+\_\+b\+Allow\+Consuming = true\hspace{0.3cm}{\ttfamily [protected]}}
+
+If true, this object is allowed to consume the inputs it is set to gather. \mbox{\Hypertarget{classol_1_1_input_gatherer_ad116c2b24ac6d7d772197656b1117ecd}\label{classol_1_1_input_gatherer_ad116c2b24ac6d7d772197656b1117ecd}} 
+\index{ol::InputGatherer@{ol::InputGatherer}!m\_bConsuming@{m\_bConsuming}}
+\index{m\_bConsuming@{m\_bConsuming}!ol::InputGatherer@{ol::InputGatherer}}
+\doxysubsubsection{\texorpdfstring{m\_bConsuming}{m\_bConsuming}}
+{\footnotesize\ttfamily bool ol\+::\+Input\+Gatherer\+::m\+\_\+b\+Consuming = true\hspace{0.3cm}{\ttfamily [protected]}}
+
+If true, this object is consuming inputs. Those inputs will not be passed to other windows or event listeners. TODO\+: Look into this a little bit more. Raw \mbox{\hyperlink{structol_1_1_input}{Input}} should in theory be m\+\_\+b\+Consuming = false, and m\+\_\+b\+Gathering = true or similar. \mbox{\Hypertarget{classol_1_1_input_gatherer_af39da7f231f8cc213e3f9cb94ea0ce23}\label{classol_1_1_input_gatherer_af39da7f231f8cc213e3f9cb94ea0ce23}} 
+\index{ol::InputGatherer@{ol::InputGatherer}!m\_bufInputs@{m\_bufInputs}}
+\index{m\_bufInputs@{m\_bufInputs}!ol::InputGatherer@{ol::InputGatherer}}
+\doxysubsubsection{\texorpdfstring{m\_bufInputs}{m\_bufInputs}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classol_1_1_threadsafe_queue}{ol\+::\+Threadsafe\+Queue}}$<$\mbox{\hyperlink{structol_1_1_input}{ol\+::\+Input}}$>$ ol\+::\+Input\+Gatherer\+::m\+\_\+buf\+Inputs \{\}\hspace{0.3cm}{\ttfamily [protected]}}
+
+A buffer that stores the input events. 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/\+One\+Library/Input\+Gatherer.\+h\end{DoxyCompactItemize}

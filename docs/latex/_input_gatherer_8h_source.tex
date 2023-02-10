@@ -1,0 +1,92 @@
+\hypertarget{_input_gatherer_8h_source}{}\doxysection{Input\+Gatherer.\+h}
+\label{_input_gatherer_8h_source}\index{include/OneLibrary/InputGatherer.h@{include/OneLibrary/InputGatherer.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#ifdef\ OS\_WINDOWS}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\ \ \ \ \#include\ <Windows.h>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\ \ \ \ \#include\ <hidusage.h>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#elif\ OS\_LINUX}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\ \ \ \ \#include\ <linux/uinput.h>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\ \ \ \ \#include\ <linux/input.h>}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\ \ \ \ \#include\ <linux/ioctl.h>}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\ \ \ \ \#include\ <iostream>}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\ \ \ \ \#include\ <fstream>}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\ \ \ \ \#include\ <cstdio>}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\ \ \ \ \#include\ <fcntl.h>}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\ \ \ \ \#include\ <linux/input.h>}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\ \ \ \ \#include\ <linux/uinput.h>}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\ \ \ \ \#include\ <unistd.h>}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#elif\ OS\_APPLE}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <utility>}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ <thread>}}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#include\ <OneLibrary/Constants.h>}}
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#include\ <OneLibrary/Enums.h>}}
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#include\ <OneLibrary/Input.h>}}
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#include\ <OneLibrary/ThreadsafeQueue.h>}}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \textcolor{keyword}{namespace\ }ol}
+\DoxyCodeLine{00032\ \{}
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{comment}{//\ This\ is\ not\ thread-\/safe.}}
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{comment}{//\ In\ fact,\ you\ should\ only\ ever\ create\ one\ Mouse/Keyboard\ Sender\ at\ any\ time.}}
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{comment}{//\ TODO:\ Implement\ this\ as\ a\ singleton\ potentially,\ or\ some\ other\ approach\ to\ prevent\ multiple\ instances\ of\ this.}}
+\DoxyCodeLine{00039\ \textcolor{comment}{}\ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classol_1_1_input_gatherer}{InputGatherer}}}
+\DoxyCodeLine{00040\ \ \ \ \ \{}
+\DoxyCodeLine{00041\ \ \ \ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ TODO:\ Look\ into\ this\ design/architecture\ a\ bit\ more.}}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ It\ works\ currently,\ but\ I'm\ not\ 100\%\ sure\ about\ the\ intricacies\ of\ it.}}
+\DoxyCodeLine{00048\ \textcolor{comment}{}\ \ \ \ \ \ \ \ \mbox{\hyperlink{classol_1_1_input_gatherer_aaa7c928fe8017d6461d7764f21e52b82}{InputGatherer}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{bool}\ kAllowConsuming\ =\ \textcolor{keyword}{true})\ \{\ \};\ \textcolor{comment}{//\ Does\ this\ need\ to\ be\ marked\ as\ explicit?}}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classol_1_1_input_gatherer}{\string~InputGatherer}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ All\ input\ gatherers\ will\ have:}}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ -\/\ An\ option\ to\ either\ consume\ or\ copy\ input}}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ -\/\ A\ buffer\ that\ stores\ input\ events}}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classol_1_1_input_gatherer_ab0185c3b28377bdf2c11f2e69d88970a}{m\_bAllowConsuming}}\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classol_1_1_input_gatherer_ad116c2b24ac6d7d772197656b1117ecd}{m\_bConsuming}}\ =\ \textcolor{keyword}{true};\ \textcolor{comment}{//\ If\ true,\ the\ input\ is\ consumed\ and\ the\ message\ is\ not\ passed\ forward.}}
+\DoxyCodeLine{00067\ \textcolor{comment}{}\ \ \ \ \ \ \ \ \mbox{\hyperlink{classol_1_1_threadsafe_queue}{ol::ThreadsafeQueue<ol::Input>}}\ \mbox{\hyperlink{classol_1_1_input_gatherer_af39da7f231f8cc213e3f9cb94ea0ce23}{m\_bufInputs}}\{\};}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \textcolor{preprocessor}{\#ifdef\ OS\_WINDOWS}}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ This\ can\ get\ pretty\ janky,\ pretty\ quickly.}}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ On\ Windows,\ all\ gatherers\ will\ have:}}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ -\/\ A\ thread\ that\ gathers\ the\ input\ events/messages\ (I\ am\ unsure\ if\ that\ will\ be\ the\ case\ for\ other\ platforms\ as\ well)}}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ -\/\ A\ HHOOK\ that\ will\ store\ the\ hook\ when\ using\ Low\ Level\ Hooks.}}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ -\/\ Raw\ Input\ variables\ used\ when\ Raw\ Input\ is\ used\ (copying,\ not\ consuming\ input\ events)}}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ std::thread\ m\_thInputGatherThread;}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ HHOOK\ m\_pHook\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ TODO:\ See\ if\ this\ can\ be\ replaced\ with\ WNDCLASSEX\ /\ WNDCLASSEXW,\ as\ WNDCLASS\ has\ been\ superseded}}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ https://learn.microsoft.com/en-\/us/windows/win32/api/winuser/ns-\/winuser-\/wndclassW}}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Which\ is\ funny,\ seeing\ how\ Microsoft's\ documentation\ for\ registering\ for\ Raw\ Input\ uses\ this\ class.}}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ WNDCLASS\ m\_wRawInputWindowClass\{\};}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ HWND\ m\_hRawInputMessageWindow\{\};}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Every\ input\ gatherer\ on\ Windows\ will\ need\ to\ provide\ their\ own\ implementation\ of\ these}}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ TODO:\ Do\ these\ need\ to\ be\ virtual?}}
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Low\ Level\ Hooks}}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ m\_StartHook()\ =\ 0;}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ m\_WaitForLowLevelHook()\ =\ 0;}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ m\_EndHook()\ =\ 0;}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Raw\ Input}}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ m\_StartRawInput()\ =\ 0;}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ m\_WaitForRawInput()\ =\ 0;}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ m\_EndRawInput()\ =\ 0;}
+\DoxyCodeLine{00098\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \mbox{\hyperlink{structol_1_1_input}{ol::Input}}\ \mbox{\hyperlink{classol_1_1_input_gatherer_a381f0ac96d5ced8bcbd978a7fe82ed50}{GatherInput}}()\ =\ 0;}
+\DoxyCodeLine{00106\ \ \ \ \ \};}
+\DoxyCodeLine{00107\ \}}
+
+\end{DoxyCode}

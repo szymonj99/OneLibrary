@@ -1,0 +1,54 @@
+\hypertarget{_threadsafe_queue_8h_source}{}\doxysection{Threadsafe\+Queue.\+h}
+\label{_threadsafe_queue_8h_source}\index{include/OneLibrary/ThreadsafeQueue.h@{include/OneLibrary/ThreadsafeQueue.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <semaphore>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <queue>}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{keyword}{namespace\ }ol}
+\DoxyCodeLine{00008\ \{}
+\DoxyCodeLine{00009\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00015\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classol_1_1_threadsafe_queue}{ThreadsafeQueue}}}
+\DoxyCodeLine{00016\ \ \ \ \ \{}
+\DoxyCodeLine{00017\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ std::queue<T>\ m\_qCollection\{\};}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ A\ semaphore\ representative\ of\ the\ empty\ spaces\ is\ not\ necessary,\ as\ queue\ will\ expand\ as\ needed.}}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ \textcolor{comment}{//std::numeric\_limits<uint32\_t>::max()}}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ std::counting\_semaphore<4294967295>\ m\_sItems\{0\};}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ std::binary\_semaphore\ m\_sMutex\{1\};}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ [[nodiscard]]\ \mbox{\hyperlink{classol_1_1_threadsafe_queue}{ThreadsafeQueue}}()\ \textcolor{keyword}{noexcept}\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ [[nodiscard]]\ T\ \mbox{\hyperlink{classol_1_1_threadsafe_queue_abc1b5b05ef632c3b1467345663f2ce88}{Get}}()\ noexcept}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \ \ \ \ this-\/>m\_sItems.acquire();}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \ \ \ \ this-\/>m\_sMutex.acquire();}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T\ value\ =\ this-\/>m\_qCollection.front();}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ \ \ \ \ this-\/>m\_qCollection.pop();}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \ \ \ \ this-\/>m\_sMutex.release();}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ value;}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ We\ will\ do\ this\ as\ a\ pass-\/by-\/value,\ as\ a\ few\ conversations\ on\ stack\ overflow\ suggested\ that\ since\ this\ container}}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ in\ theory\ owns\ the\ objects,\ it's\ the\ best\ choice.}}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Otherwise,\ we\ have\ to\ mess\ with\ std::reference\_wrapper<T>\ or\ lifetimes.\ Yuck!}}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ And\ ol::Input\ (what\ we\ will\ use\ this\ for)\ are\ under\ 50\ bytes\ each,\ this\ should\ not\ result\ in\ a\ drastic}}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ performance\ impact.}}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Another\ potential\ approach\ is\ to\ store\ std::unique\_ptr<T>,\ but\ that\ can\ be\ defined\ by\ our\ code\ later,\ rather\ than\ here.}}
+\DoxyCodeLine{00051\ \textcolor{comment}{}\ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classol_1_1_threadsafe_queue_a1be2225eb33380c2090a5c983eebe7de}{Add}}(\textcolor{keyword}{const}\ T\ item)\ \textcolor{keyword}{noexcept}}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \ \ \ \ this-\/>m\_sMutex.acquire();}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \ \ \ \ this-\/>m\_qCollection.push(item);}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \ \ \ \ this-\/>m\_sItems.release();}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \ \ \ \ this-\/>m\_sMutex.release();}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00060\ \ \ \ \ \};}
+\DoxyCodeLine{00061\ \}}
+
+\end{DoxyCode}

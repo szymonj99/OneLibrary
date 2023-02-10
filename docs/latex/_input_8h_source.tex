@@ -1,0 +1,44 @@
+\hypertarget{_input_8h_source}{}\doxysection{Input.\+h}
+\label{_input_8h_source}\index{include/OneLibrary/Input.h@{include/OneLibrary/Input.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <OneLibrary/Constants.h>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <OneLibrary/Enums.h>}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{keyword}{namespace\ }ol}
+\DoxyCodeLine{00007\ \{}
+\DoxyCodeLine{00011\ \ \ \ \ \textcolor{comment}{//\ TODO:\ Potentially\ rename\ this\ to\ MouseCoords}}
+\DoxyCodeLine{00012\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structol_1_1_mouse_input}{MouseInput}}}
+\DoxyCodeLine{00013\ \ \ \ \ \{}
+\DoxyCodeLine{00017\ \ \ \ \ \ \ \ \ ol::MouseInt\ \mbox{\hyperlink{structol_1_1_mouse_input_a2e411cd3daaf0d37de7fbdcfb373954a}{x}}\ =\ 0;}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ ol::MouseInt\ \mbox{\hyperlink{structol_1_1_mouse_input_acf7fc8a5d1702788d65ef73e642fa329}{y}}\ =\ 0;}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ ol::MouseInt\ \mbox{\hyperlink{structol_1_1_mouse_input_a6c8aeb20471ee1256891c0f585fc6b5b}{scroll}}\ =\ 0;}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ We\ can\ either:\ Have\ which\ buttons\ were\ clicked\ here}}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Or\ have\ it\ as\ an\ event\ type\ on\ the\ Input\ struct.}}
+\DoxyCodeLine{00028\ \ \ \ \ \};}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{comment}{//\ TODO:\ Potentially\ rename\ this,\ but\ I'm\ not\ sure\ what\ a\ better\ name\ would\ be.}}
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structol_1_1_keyboard_input}{KeyboardInput}}}
+\DoxyCodeLine{00035\ \ \ \ \ \{}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ ol::KeyboardInt\ \mbox{\hyperlink{structol_1_1_keyboard_input_a75e34ac4cbe1d15b06db5bfdb313776c}{key}}\ =\ 0;}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \textcolor{comment}{//ol::KeyboardInt\ state\ =\ 0;}}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ I\ think\ the\ above\ state\ is\ not\ necessary\ as\ we\ have\ the\ eventType\ enum\ now,\ which\ tells\ us\ if\ a\ key\ was\ pressed\ or\ released}}
+\DoxyCodeLine{00042\ \ \ \ \ \};}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \ \ \ \ \textcolor{comment}{//\ This\ class\ is\ what\ will\ be\ sent\ from\ the\ Server\ to\ the\ Client.}}
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{comment}{//\ I\ think\ for\ this,\ adding\ some\ tests\ would\ be\ easy.}}
+\DoxyCodeLine{00046\ \ \ \ \ \textcolor{comment}{//\ In\ the\ future,\ this\ could\ be\ made\ ASN.1-\/compliant.}}
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{comment}{//\ TODO:\ Potentially\ turn\ this\ into\ a\ class}}
+\DoxyCodeLine{00048\ \ \ \ \ \textcolor{comment}{//\ So\ that\ we\ can\ construct\ it\ with\ a\ type.}}
+\DoxyCodeLine{00052\ \textcolor{comment}{}\ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structol_1_1_input}{Input}}}
+\DoxyCodeLine{00053\ \ \ \ \ \{}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ ol::eInputType\ \mbox{\hyperlink{structol_1_1_input_abb090db29e5df546286b881af1623360}{inputType}}\ =\ ol::eInputType::None;}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ ol::eEventType\ \mbox{\hyperlink{structol_1_1_input_a1e86437aa090b931da324f4b9e2d97a9}{eventType}}\ =\ ol::eEventType::None;}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structol_1_1_mouse_input}{ol::MouseInput}}\ \mbox{\hyperlink{structol_1_1_input_ad05e7c7e560c1295fd73d5422d60097a}{mouse}}\ =\ \mbox{\hyperlink{structol_1_1_mouse_input}{ol::MouseInput}}();}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structol_1_1_keyboard_input}{ol::KeyboardInput}}\ \mbox{\hyperlink{structol_1_1_input_aa74bc6390679ac1e7a5b767e6f1c8a0e}{keyboard}}\ =\ \mbox{\hyperlink{structol_1_1_keyboard_input}{ol::KeyboardInput}}();}
+\DoxyCodeLine{00070\ \ \ \ \ \};}
+\DoxyCodeLine{00071\ \}}
+
+\end{DoxyCode}

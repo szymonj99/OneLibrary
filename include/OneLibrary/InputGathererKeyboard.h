@@ -4,6 +4,9 @@
 
 namespace ol
 {
+    /**
+     * This gathers keyboard input events.
+     */
     class InputGathererKeyboard : public ol::InputGatherer
     {
     private:
@@ -32,8 +35,16 @@ namespace ol
         static LRESULT CALLBACK RawInputProcedure(const HWND hWnd, const UINT message, const WPARAM wParam, const LPARAM lParam);
 #endif
     public:
-        InputGathererKeyboard(const bool kAllowConsuming = true);
+        /**
+         * Create an input gatherer responsible for gathering keyboard input events.
+         * @param kAllowConsuming If true, this gatherer is allowed to consume input events.
+         */
+        explicit InputGathererKeyboard(const bool kAllowConsuming = true);
         ~InputGathererKeyboard();
+        /**
+         * Blocks until a keyboard event happens.
+         * @return An input object representative of the event.
+         */
         ol::Input GatherInput() override;
     };
 }

@@ -7,6 +7,11 @@
 namespace ol
 {
     template <typename T>
+    /**
+     * A thread-safe wrapper around std::queue, which can act as a buffer in a producer-consumer scenario.
+     * This is a First-In-First-Out (`FIFO`) data structure.
+     * @tparam T Type of value stored.
+     */
     class ThreadsafeQueue
     {
     private:
@@ -17,6 +22,10 @@ namespace ol
         std::binary_semaphore m_sMutex{1};
     public:
         [[nodiscard]] ThreadsafeQueue() noexcept = default;
+        /**
+         * Blocks until a value can be retrieved from the queue.
+         * @return A value/item that has been popped from the queue.
+         */
         [[nodiscard]] T Get() noexcept
         {
             this->m_sItems.acquire();
@@ -35,6 +44,10 @@ namespace ol
         // And ol::Input (what we will use this for) are under 50 bytes each, this should not result in a drastic
         // performance impact.
         // Another potential approach is to store std::unique_ptr<T>, but that can be defined by our code later, rather than here.
+        /**
+         * Add an item to the queue. In theory, running out of space is highly unlikely.
+         * @param item The item/value to be added to the queue.
+         */
         void Add(const T item) noexcept
         {
             this->m_sMutex.acquire();

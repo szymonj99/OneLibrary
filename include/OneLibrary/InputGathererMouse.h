@@ -4,6 +4,9 @@
 
 namespace ol
 {
+    /**
+     * This gathers mouse input events.
+     */
     class InputGathererMouse : public ol::InputGatherer
     {
     private:
@@ -33,7 +36,11 @@ namespace ol
 #endif
 
     public:
-        InputGathererMouse(const bool kAllowConsuming = true);
+        /**
+         * Create a new input gatherer for mouse events.
+         * @param kAllowConsuming If true, the gatherer can be set to consume the events, meaning the event will not be passed to other windows or hooks.
+         */
+        explicit InputGathererMouse(const bool kAllowConsuming = true);
         ~InputGathererMouse();
         ol::Input GatherInput() override;
     };
