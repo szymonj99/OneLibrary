@@ -1,5 +1,10 @@
 #pragma once
 
+#include <cstdint>
+#include <iostream>
+#include <sstream>
+#include <string>
+
 #include <OneLibrary/Constants.h>
 #include <OneLibrary/Enums.h>
 
@@ -68,4 +73,53 @@ namespace ol
 		 */
 		ol::KeyboardInput keyboard = ol::KeyboardInput();
 	};
+
+    std::istream& operator>>(std::istream& stream, ol::eInputType& inputType);
+    std::ostream& operator<<(std::ostream& stream, const ol::eInputType& kInputType);
+
+    std::istream& operator>>(std::istream& stream, ol::eEventType& eventType);
+    std::ostream& operator<<(std::ostream& stream, const ol::eEventType& kEventType);
+
+    std::istream& operator>>(std::istream& stream, ol::MouseInput& mouseInput);
+    std::ostream& operator<<(std::ostream& stream, const ol::MouseInput& kMouseInput);
+
+    std::istream& operator>>(std::istream& stream, ol::KeyboardInput& keyboardInput);
+    std::ostream& operator<<(std::ostream& stream, const ol::KeyboardInput& kKeyboardInput);
+
+    std::istream& operator>>(std::istream& stream, ol::Input& input);
+    std::ostream& operator<<(std::ostream& stream, const ol::Input& kInput);
+
+    // TODO: Figure out if we need to do:
+    // std::istringstream and std::ostringstream, or if we can just use std::stringstream
+    // For now, I will add both.
+
+    std::stringstream& operator>>(std::stringstream& stream, ol::eInputType& inputType);
+    std::istringstream& operator>>(std::istringstream& stream, ol::eInputType& inputType);
+
+    std::stringstream& operator<<(std::stringstream& stream, const ol::eInputType& kInputType);
+    std::ostringstream& operator<<(std::ostringstream& stream, const ol::eInputType& kInputType);
+
+    std::stringstream& operator>>(std::stringstream& stream, ol::eEventType& eventType);
+    std::istringstream& operator>>(std::istringstream& stream, ol::eEventType& eventType);
+
+    std::stringstream& operator<<(std::stringstream& stream, const ol::eEventType& kEventType);
+    std::ostringstream& operator<<(std::ostringstream& stream, const ol::eEventType& kEventType);
+
+    std::stringstream& operator>>(std::stringstream& stream, ol::MouseInput& mouseInput);
+    std::istringstream& operator>>(std::istringstream& stream, ol::MouseInput& mouseInput);
+
+    std::stringstream& operator<<(std::stringstream& stream, const ol::MouseInput& kMouseInput);
+    std::ostringstream& operator<<(std::ostringstream& stream, const ol::MouseInput& kMouseInput);
+
+    std::stringstream& operator>>(std::stringstream& stream, ol::KeyboardInput& keyboardInput);
+    std::istringstream& operator>>(std::istringstream& stream, ol::KeyboardInput& keyboardInput);
+
+    std::stringstream& operator<<(std::stringstream& stream, const ol::KeyboardInput& kKeyboardInput);
+    std::ostringstream& operator<<(std::ostringstream& stream, const ol::KeyboardInput& kKeyboardInput);
+
+    std::stringstream& operator>>(std::stringstream& stream, ol::Input& input);
+    std::istringstream& operator>>(std::istringstream& stream, ol::Input& input);
+
+    std::stringstream& operator<<(std::stringstream& stream, const ol::Input& kInput);
+    std::ostringstream& operator<<(std::ostringstream& stream, const ol::Input& kInput);
 }
