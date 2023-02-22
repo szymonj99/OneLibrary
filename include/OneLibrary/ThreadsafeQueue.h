@@ -18,7 +18,7 @@ namespace ol
         std::queue<T> m_qCollection{};
         // A semaphore representative of the empty spaces is not necessary, as queue will expand as needed.
         //std::numeric_limits<uint32_t>::max()
-        std::counting_semaphore<4294967295> m_sItems{0};
+        std::counting_semaphore<2147483647> m_sItems{0};
         std::binary_semaphore m_sMutex{1};
     public:
         [[nodiscard]] ThreadsafeQueue() noexcept = default;
