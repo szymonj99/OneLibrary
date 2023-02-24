@@ -14,8 +14,9 @@ See the [license file](LICENSE) (subject to change)
 
 # Project Structure
 ```
-./src   - The source files for the library
-./tests - The test files
+./inlude - The header files
+./src    - The source files
+./tests  - The test files
 ```
 
 # Get Started - CMake Build
@@ -29,13 +30,11 @@ cmake --build build --config Release
 # CMake Files Style
 - Use `TRUE` and `FALSE` rather than `ON` or `OFF`
 
-# Argument Parsing
-Read more about which dependency was chosen [here](docs/arg_parsing.md)
-
 # Testing Framework
 Read more about which dependency was chosen [here](docs/testing_frameworks.md)
 
 # Projects Using This Library
+- [OneControl](https://github.com/szymonj99/OneControl)
 - To add your project to this list, [create a PR!](https://github.com/szymonj99/OneLibrary/compare) 👍
 
 # Developing With Local Changes

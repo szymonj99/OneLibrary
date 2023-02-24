@@ -11,8 +11,25 @@ jobs:
   build-ubuntu-release:
     runs-on: ubuntu-latest
 
+    env:
+      VCPKG_DISABLE_METRICS: 1s
+      VCPKG_ROOT: ${{ github.workspace }}/vcpkg
+
     steps:
     - uses: actions/checkout@v3
+
+    - name: Install packages
+      run: sudo apt update && sudo apt install libevdev-dev
+      shell: bash
+
+    - name: Copy libevdev to Directory
+      run: |
+        cd /usr/include/libevdev-1.0
+        sudo mv libevdev ../
+
+    - name: Set up VCPKG
+      run: git clone https://github.com/microsoft/vcpkg && cd ./vcpkg && chmod u+x ./bootstrap-vcpkg.sh && ./bootstrap-vcpkg.sh
+      shell: bash
 
     - name: Configure CMake
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
@@ -23,8 +40,16 @@ jobs:
   build-windows-release:
     runs-on: windows-latest
 
+    env:
+      VCPKG_DISABLE_METRICS: 1
+      VCPKG_ROOT: ${{ github.workspace }}/vcpkg
+
     steps:
     - uses: actions/checkout@v3
+
+    - name: Set up VCPKG
+      run: git clone https://github.com/microsoft/vcpkg && cd ./vcpkg && chmod u+x ./bootstrap-vcpkg.bat && ./bootstrap-vcpkg.bat
+      shell: bash
 
     - name: Configure CMake
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
@@ -35,8 +60,16 @@ jobs:
   build-macos-release:
     runs-on: macos-latest
 
+    env:
+      VCPKG_DISABLE_METRICS: 1
+      VCPKG_ROOT: ${{ github.workspace }}/vcpkg
+
     steps:
     - uses: actions/checkout@v3
+
+    - name: Set up VCPKG
+      run: git clone https://github.com/microsoft/vcpkg && cd ./vcpkg && chmod u+x ./bootstrap-vcpkg.sh && ./bootstrap-vcpkg.sh
+      shell: bash
 
     - name: Configure CMake
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}

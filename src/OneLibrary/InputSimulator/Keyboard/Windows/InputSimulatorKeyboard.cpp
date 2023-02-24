@@ -2,12 +2,16 @@
 
 #include <OneLibrary/InputSimulatorKeyboard.h>
 
+ol::InputSimulatorKeyboard::InputSimulatorKeyboard() {}
+
+ol::InputSimulatorKeyboard::~InputSimulatorKeyboard() {}
+
 void ol::InputSimulatorKeyboard::PerformInput(const ol::Input& kInput)
 {
     INPUT input{};
     input.type = INPUT_KEYBOARD;
 
-    input.ki.wVk = kInput.keyboard.key;
+    input.ki.wVk = ol::KeyCodeToWindows.at(kInput.keyboard.key);
     input.ki.wScan = 0; // Not 100% sure about this. Would we use this in the future?
     input.ki.time = 0;
     input.ki.dwExtraInfo = 0; // Again, not needed at all as we don't provide extra info.

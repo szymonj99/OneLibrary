@@ -128,11 +128,11 @@ LRESULT CALLBACK ol::InputGathererKeyboard::LowLevelHookProcedure(const int nCod
     {
     case WM_KEYDOWN:
         input.eventType = ol::eEventType::KBKeyDown;
-        input.keyboard.key = hookStruct->vkCode;
+        input.keyboard.key = ol::WindowsToKeyCode.at(hookStruct->vkCode);
         break;
     case WM_KEYUP:
         input.eventType = ol::eEventType::KBKeyUp;
-        input.keyboard.key = hookStruct->vkCode;
+        input.keyboard.key = ol::WindowsToKeyCode.at(hookStruct->vkCode);
         break;
     default:
         std::cerr << "Got Unhandled Message: hex: 0x" << wParam << "\n";
@@ -264,11 +264,11 @@ LRESULT CALLBACK ol::InputGathererKeyboard::RawInputProcedure(const HWND hWnd, c
         {
             case WM_KEYDOWN:
                 input.eventType = ol::eEventType::KBKeyDown;
-                input.keyboard.key = rawInput->data.keyboard.VKey;
+                input.keyboard.key = ol::WindowsToKeyCode.at(rawInput->data.keyboard.VKey);
                 break;
             case WM_KEYUP:
                 input.eventType = ol::eEventType::KBKeyUp;
-                input.keyboard.key = rawInput->data.keyboard.VKey;
+                input.keyboard.key = ol::WindowsToKeyCode.at(rawInput->data.keyboard.VKey);
                 break;
             // TODO: Add in cases for Message 260 and 261 (I think those come from special keys like Ctrl, Alt etc. but I'm not 100% sure.)
             // TODO: Add in cases for Message 7865344 and 4287104000 (Scroll up and scroll down)

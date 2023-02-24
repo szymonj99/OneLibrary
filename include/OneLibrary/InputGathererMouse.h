@@ -10,10 +10,10 @@ namespace ol
     class InputGathererMouse : public ol::InputGatherer
     {
     private:
+#ifdef OS_WINDOWS
         static inline ol::ThreadsafeQueue<ol::Input> m_bufInputs{};
         static inline bool m_bConsuming = true;
 
-#ifdef OS_WINDOWS
         // To avoid potential issues with calling virtual functions in the destructor, e can instead
         // call these functions which will only be defined in the current derived class and not in the base class.
         // These are currently only called on Windows.

@@ -46,13 +46,15 @@ namespace ol
 
     std::istream& operator>>(std::istream& stream, ol::KeyboardInput& keyboardInput)
     {
-        stream >> keyboardInput.key;
+        uint16_t k;
+        stream >> k;
+        keyboardInput.key = static_cast<ol::eKeyCode>(k);
         return stream;
     }
 
     std::ostream& operator<<(std::ostream& stream, const ol::KeyboardInput& kKeyboardInput)
     {
-        stream << kKeyboardInput.key;
+        stream << static_cast<uint16_t>(kKeyboardInput.key);
         return stream;
     }
 
@@ -153,25 +155,29 @@ namespace ol
 
     std::stringstream& operator>>(std::stringstream& stream, ol::KeyboardInput& keyboardInput)
     {
-        stream >> keyboardInput.key;
+        uint16_t k;
+        stream >> k;
+        keyboardInput.key = static_cast<ol::eKeyCode>(k);
         return stream;
     }
 
     std::istringstream& operator>>(std::istringstream& stream, ol::KeyboardInput& keyboardInput)
     {
-        stream >> keyboardInput.key;
+        uint16_t k;
+        stream >> k;
+        keyboardInput.key = static_cast<ol::eKeyCode>(k);
         return stream;
     }
 
     std::stringstream& operator<<(std::stringstream& stream, const ol::KeyboardInput& kKeyboardInput)
     {
-        stream << kKeyboardInput.key;
+        stream << static_cast<uint16_t>(kKeyboardInput.key);
         return stream;
     }
 
     std::ostringstream& operator<<(std::ostringstream& stream, const ol::KeyboardInput& kKeyboardInput)
     {
-        stream << kKeyboardInput.key;
+        stream << static_cast<uint16_t>(kKeyboardInput.key);
         return stream;
     }
 
