@@ -353,6 +353,7 @@ namespace ol
         std::pair(ol::eKeyCode::LeftSlash, 43),
         std::pair(ol::eKeyCode::Comma, 51),
         std::pair(ol::eKeyCode::Period, 52),
+        std::pair(ol::eKeyCode::RightSlash, 53),
         std::pair(ol::eKeyCode::RightShift, 54),
         std::pair(ol::eKeyCode::LeftAlt, 56),
         std::pair(ol::eKeyCode::Space, 57),

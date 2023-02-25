@@ -1,6 +1,5 @@
 #ifdef OS_LINUX
 
-#include <unordered_map>
 #include <OneLibrary/InputSimulatorKeyboard.h>
 
 ol::InputSimulatorKeyboard::InputSimulatorKeyboard()
