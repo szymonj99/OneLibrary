@@ -1,7 +1,17 @@
 cmake_minimum_required (VERSION 3.19 FATAL_ERROR)
 
+if(NOT DEFINED ENV{VCPKG_ROOT})
+    message(FATAL_ERROR "VCPKG_ROOT is not set!")
+else()
+    file(REAL_PATH $ENV{VCPKG_ROOT} VCPKG_ROOT)
+    message(STATUS "VCPKG_ROOT is defined as: $ENV{VCPKG_ROOT} (Real Path: ${VCPKG_ROOT})")
+endif()
+# This needs to be done before calling project()
+set(CMAKE_TOOLCHAIN_FILE ${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake)
+message(STATUS "Using VCPKG Toolchain from: ${CMAKE_TOOLCHAIN_FILE}")
+
 set(LIBRARY_NAME OneLibrary)
-set(LIBRARY_VERSION 0.0.1)
+set(LIBRARY_VERSION 0.0.2)
 
 project(${LIBRARY_NAME} LANGUAGES CXX VERSION ${LIBRARY_VERSION} DESCRIPTION "OneLibrary - Cross-Platform Input Hooking")
 
@@ -22,20 +32,14 @@ endif()
 include(cmake/GetCPMConfig.cmake)
 include(GNUInstallDirs)
 
-set(LINKER_LANGUAGE CXX)
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
-set(CMAKE_POSITION_INDEPENDENT_CODE FALSE) # I disabled this as I felt it wasn't necessary.
-set(BUILD_SHARED_LIBS FALSE) # I want this to be a self-contained application at first, so all the dependencies are included in it.
-set(UNICODE TRUE)
-set(CMAKE_BUILD_PARALLEL_LEVEL 8)
-
-set_property(GLOBAL PROPERTY USE_FOLDERS TRUE)
+#set(Boost_NO_WARN_NEW_VERSIONS TRUE) # Boost complains about it being of a new version.
 
 # I use this to make development easier.
 # This lets a user create a new file and it will be automatically compiled.
 # Get all the files needed for the library
-file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/src/OneLibrary/*.cpp" "${PROJECT_SOURCE_DIR}/include/OneLibrary/*.h")
+file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/src/OneLibrary/*.cpp ${PROJECT_SOURCE_DIR}/include/OneLibrary/*.h)
+
+#find_package(Boost REQUIRED COMPONENTS iostreams)
 
 # Let's only add 'Backward-CPP' if we are running a debug build
 if(ONELIBRARY_USE_BACKWARDCPP AND CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -55,11 +59,26 @@ target_include_directories(${PROJECT_NAME}
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
         ${PROJECT_SOURCE_DIR}/include)
 
-file(GLOB_RECURSE PUBLIC_HEADERS CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/include/*.h")
+if(CMAKE_HOST_LINUX)
+    target_link_libraries(${PROJECT_NAME} PRIVATE evdev)
+endif()
+
+#target_link_libraries(${PROJECT_NAME} PRIVATE spdlog::spdlog Boost::iostreams)
+
+file(GLOB_RECURSE PUBLIC_HEADERS CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/include/*.h)
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${PUBLIC_HEADERS}")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "Debug")
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
+
+set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(${PROJECT_NAME} PROPERTIES CMAKE_CXX_STANDARD 20)
+set_target_properties(${PROJECT_NAME} PROPERTIES CMAKE_CXX_STANDARD_REQUIRED TRUE)
+set_target_properties(${PROJECT_NAME} PROPERTIES CMAKE_POSITION_INDEPENDENT_CODE FALSE)
+set_target_properties(${PROJECT_NAME} PROPERTIES BUILD_SHARED_LIBS FALSE)
+set_target_properties(${PROJECT_NAME} PROPERTIES UNICODE TRUE)
+set_target_properties(${PROJECT_NAME} PROPERTIES CMAKE_BUILD_PARALLEL_LEVEL 8)
+set_target_properties(${PROJECT_NAME} PROPERTIES USE_FOLDERS TRUE)
 
 # Check inter-procedural optimisation
 include(CheckIPOSupported)
@@ -84,12 +103,12 @@ else()
 endif()
 
 #install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}Targets PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME} INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-install(TARGETS ${PROJECT_NAME} PUBLIC_HEADER DESTINATION "${PROJECT_SOURCE_DIR}/include")
+install(TARGETS ${PROJECT_NAME} PUBLIC_HEADER DESTINATION ${PROJECT_SOURCE_DIR}/include)
 
-if(PACKAGE_TESTS)
+if(ONELIBRARY_BUILD_TESTS)
     # enable_testing() needs to be here.
     # Reasoning: https://stackoverflow.com/questions/64099136/visual-studio-2019-test-explorer-did-not-find-c-google-tests
     message(STATUS "Adding tests")
     enable_testing()
-    add_subdirectory("${PROJECT_SOURCE_DIR}/tests")
+    add_subdirectory(${PROJECT_SOURCE_DIR}/tests)
 endif()

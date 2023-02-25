@@ -10,8 +10,8 @@ namespace ol
     class InputSimulatorMouse : public ol::InputSimulator
     {
     public:
-        InputSimulatorMouse() = default;
-        ~InputSimulatorMouse() = default;
+        InputSimulatorMouse();
+        ~InputSimulatorMouse();
         void PerformInput(const ol::Input& kInput) override;
     };
 }

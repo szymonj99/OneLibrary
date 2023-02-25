@@ -41,9 +41,7 @@ namespace ol
         /**
          * The virtual key kode, the sate of which has been altered since the last event.
          */
-        ol::KeyboardInt key = 0;
-        //ol::KeyboardInt state = 0;
-        // I think the above state is not necessary as we have the eventType enum now, which tells us if a key was pressed or released
+        ol::eKeyCode key = ol::eKeyCode::NONE;
 	};
 
 	// This class is what will be sent from the Server to the Client.

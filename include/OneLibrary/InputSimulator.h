@@ -4,20 +4,15 @@
     #include <Windows.h>
     #include <hidusage.h>
 #elif OS_LINUX
-    #include <linux/uinput.h>
-    #include <linux/input.h>
-    #include <linux/ioctl.h>
-    #include <iostream>
-    #include <fstream>
-    #include <cstdio>
-    #include <fcntl.h>
-    #include <linux/input.h>
-    #include <linux/uinput.h>
-    #include <unistd.h>
+    #include <memory>
+    // TODO: To make this nicer, think about moving the library files up a directory.
+    #include <libevdev/libevdev.h>
+    #include <libevdev/libevdev-uinput.h>
 #elif OS_APPLE
 #endif
 
 #include <OneLibrary/Input.h>
+#include <OneLibrary/InputTable.h>
 
 namespace ol
 {
@@ -29,6 +24,13 @@ namespace ol
     protected:
         InputSimulator() = default;
         ~InputSimulator() = default;
+
+#ifdef OS_LINUX
+        //std::unique_ptr<libevdev> m_pVirtualDevice{ libevdev_new() };
+        libevdev* m_pVirtualDevice = libevdev_new();
+        //std::unique_ptr<libevdev_uinput> m_pVirtualInput{};
+        libevdev_uinput* m_pVirtualInput{};
+#endif
 
     public:
         /**

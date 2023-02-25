@@ -2,6 +2,10 @@
 
 #include <OneLibrary/InputSimulatorMouse.h>
 
+ol::InputSimulatorMouse::InputSimulatorMouse() {}
+
+ol::InputSimulatorMouse::~InputSimulatorMouse() {}
+
 void ol::InputSimulatorMouse::PerformInput(const ol::Input& kInput)
 {
     INPUT input{};

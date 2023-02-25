@@ -10,8 +10,8 @@ namespace ol
     class InputSimulatorKeyboard : public ol::InputSimulator
     {
     public:
-        InputSimulatorKeyboard() = default;
-        ~InputSimulatorKeyboard() = default;
+        InputSimulatorKeyboard();
+        ~InputSimulatorKeyboard();
         void PerformInput(const ol::Input& kInput) override;
     };
 }
