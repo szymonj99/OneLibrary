@@ -66,10 +66,8 @@ namespace ol
 
         std::thread m_thInputGatherThread;
         HHOOK m_pHook = nullptr;
-        // TODO: See if this can be replaced with WNDCLASSEX / WNDCLASSEXW, as WNDCLASS has been superseded
-        // https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-wndclassW
-        // Which is funny, seeing how Microsoft's documentation for registering for Raw Input uses this class.
-        WNDCLASS m_wRawInputWindowClass{};
+
+        WNDCLASSEXW m_wRawInputWindowClass{};
         HWND m_hRawInputMessageWindow{};
 
         // Every input gatherer on Windows will need to provide their own implementation of these

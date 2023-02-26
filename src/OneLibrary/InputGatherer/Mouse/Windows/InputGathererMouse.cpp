@@ -214,14 +214,14 @@ void ol::InputGathererMouse::m_StartRawInput()
     this->m_thInputGatherThread = std::thread([&]
     {
         // Window class
-        this->m_wRawInputWindowClass.hInstance = (HINSTANCE)1;
-        this->m_wRawInputWindowClass.lpszClassName = "OneControl - Mouse Procedure";
+        this->m_wRawInputWindowClass.hInstance = nullptr;
+        this->m_wRawInputWindowClass.lpszClassName = L"OneControl - Mouse Procedure";
         this->m_wRawInputWindowClass.lpfnWndProc = ol::InputGathererMouse::RawInputProcedure;
-        RegisterClass(&this->m_wRawInputWindowClass);
+        RegisterClassExW(&this->m_wRawInputWindowClass);
 
         // Create message window:
         // Invisible window that we use to get raw input messages.
-        this->m_hRawInputMessageWindow = CreateWindow(this->m_wRawInputWindowClass.lpszClassName, nullptr, 0, 0, 0, 0, 0, HWND_MESSAGE, nullptr, this->m_wRawInputWindowClass.hInstance, nullptr);
+        this->m_hRawInputMessageWindow = CreateWindowExW(0, this->m_wRawInputWindowClass.lpszClassName, nullptr, 0, 0, 0, 0, 0, HWND_MESSAGE, nullptr, this->m_wRawInputWindowClass.hInstance, nullptr);
 
         RAWINPUTDEVICE rawInput[1]{};
 
