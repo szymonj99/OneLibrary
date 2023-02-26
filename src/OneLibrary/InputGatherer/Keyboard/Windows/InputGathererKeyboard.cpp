@@ -165,13 +165,13 @@ void ol::InputGathererKeyboard::m_StartRawInput()
     // We need to create the window on the same thread that we call GetMessage from.
     this->m_thInputGatherThread = std::thread([&]
     {
-        this->m_wRawInputWindowClass.hInstance = (HINSTANCE)1;
-        this->m_wRawInputWindowClass.lpszClassName = "OneControl - Keyboard Procedure";
+        this->m_wRawInputWindowClass.hInstance = nullptr;
+        this->m_wRawInputWindowClass.lpszClassName = L"OneControl - Keyboard Procedure";
         this->m_wRawInputWindowClass.lpfnWndProc = ol::InputGathererKeyboard::RawInputProcedure;
-        RegisterClass(&this->m_wRawInputWindowClass);
+        RegisterClassExW(&this->m_wRawInputWindowClass);
         // Create message window:
         // Invisible window that we use to get raw input messages.
-        this->m_hRawInputMessageWindow = CreateWindow(this->m_wRawInputWindowClass.lpszClassName, nullptr, 0, 0, 0, 0, 0, HWND_MESSAGE, nullptr, this->m_wRawInputWindowClass.hInstance, nullptr);
+        this->m_hRawInputMessageWindow = CreateWindowExW(0, this->m_wRawInputWindowClass.lpszClassName, nullptr, 0, 0, 0, 0, 0, HWND_MESSAGE, nullptr, this->m_wRawInputWindowClass.hInstance, nullptr);
         RAWINPUTDEVICE rawInput[1]{};
         rawInput[0].usUsagePage = HID_USAGE_PAGE_GENERIC;
         rawInput[0].usUsage = HID_USAGE_GENERIC_KEYBOARD;
