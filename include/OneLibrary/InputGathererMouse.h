@@ -33,6 +33,8 @@ namespace ol
         static LRESULT CALLBACK LowLevelHookProcedure(const int nCode, const WPARAM wParam, const LPARAM lParam);
         // This is what's called every time a raw input event happens.
         static LRESULT CALLBACK RawInputProcedure(const HWND hWnd, const UINT message, const WPARAM wParam, const LPARAM lParam);
+#elif OS_LINUX
+        void m_fDeviceHandler(libevdev* device) override;
 #endif
 
     public:

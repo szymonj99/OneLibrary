@@ -5,7 +5,6 @@
     #include <hidusage.h>
 #elif OS_LINUX
     #include <memory>
-    // TODO: To make this nicer, think about moving the library files up a directory.
     #include <libevdev/libevdev.h>
     #include <libevdev/libevdev-uinput.h>
 #elif OS_APPLE
@@ -26,9 +25,7 @@ namespace ol
         ~InputSimulator() = default;
 
 #ifdef OS_LINUX
-        //std::unique_ptr<libevdev> m_pVirtualDevice{ libevdev_new() };
         libevdev* m_pVirtualDevice = libevdev_new();
-        //std::unique_ptr<libevdev_uinput> m_pVirtualInput{};
         libevdev_uinput* m_pVirtualInput{};
 #endif
 

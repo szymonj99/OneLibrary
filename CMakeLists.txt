@@ -1,15 +1,5 @@
 cmake_minimum_required (VERSION 3.19 FATAL_ERROR)
 
-if(NOT DEFINED ENV{VCPKG_ROOT})
-    message(FATAL_ERROR "VCPKG_ROOT is not set!")
-else()
-    file(REAL_PATH $ENV{VCPKG_ROOT} VCPKG_ROOT)
-    message(STATUS "VCPKG_ROOT is defined as: $ENV{VCPKG_ROOT} (Real Path: ${VCPKG_ROOT})")
-endif()
-# This needs to be done before calling project()
-set(CMAKE_TOOLCHAIN_FILE ${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake)
-message(STATUS "Using VCPKG Toolchain from: ${CMAKE_TOOLCHAIN_FILE}")
-
 set(LIBRARY_NAME OneLibrary)
 set(LIBRARY_VERSION 0.0.2)
 
@@ -32,14 +22,10 @@ endif()
 include(cmake/GetCPMConfig.cmake)
 include(GNUInstallDirs)
 
-#set(Boost_NO_WARN_NEW_VERSIONS TRUE) # Boost complains about it being of a new version.
-
 # I use this to make development easier.
 # This lets a user create a new file and it will be automatically compiled.
 # Get all the files needed for the library
 file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/src/OneLibrary/*.cpp ${PROJECT_SOURCE_DIR}/include/OneLibrary/*.h)
-
-#find_package(Boost REQUIRED COMPONENTS iostreams)
 
 # Let's only add 'Backward-CPP' if we are running a debug build
 if(ONELIBRARY_USE_BACKWARDCPP AND CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -62,8 +48,6 @@ target_include_directories(${PROJECT_NAME}
 if(CMAKE_HOST_LINUX)
     target_link_libraries(${PROJECT_NAME} PRIVATE evdev)
 endif()
-
-#target_link_libraries(${PROJECT_NAME} PRIVATE spdlog::spdlog Boost::iostreams)
 
 file(GLOB_RECURSE PUBLIC_HEADERS CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/include/*.h)
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${PUBLIC_HEADERS}")
