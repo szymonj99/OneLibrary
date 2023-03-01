@@ -6,6 +6,8 @@
 
 namespace ol
 {
+    // TODO: Add mouse buttons translations here too.
+
     // TODO: Check if 0xDF will be an issue as it can vary between keyboards.
     // The definitions for this are taken from Microsoft's documentation.
     inline std::unordered_map<std::uint16_t, ol::eKeyCode> WindowsToKeyCode {
@@ -139,6 +141,133 @@ namespace ol
 
         // TODO: Add all the Fn + {key} options here.
         std::pair(0xFF, ol::eKeyCode::Fn)
+    };
+
+    inline std::unordered_map<std::uint16_t, ol::eKeyCode> LinuxToKeyCode {
+            std::pair(30, ol::eKeyCode::A),
+            std::pair(48, ol::eKeyCode::B),
+            std::pair(46, ol::eKeyCode::C),
+            std::pair(32, ol::eKeyCode::D),
+            std::pair(18, ol::eKeyCode::E),
+            std::pair(33, ol::eKeyCode::F),
+            std::pair(34, ol::eKeyCode::G),
+            std::pair(35, ol::eKeyCode::H),
+            std::pair(23, ol::eKeyCode::I),
+            std::pair(36, ol::eKeyCode::J),
+            std::pair(37, ol::eKeyCode::K),
+            std::pair(38, ol::eKeyCode::L),
+            std::pair(50, ol::eKeyCode::M),
+            std::pair(49, ol::eKeyCode::N),
+            std::pair(24, ol::eKeyCode::O),
+            std::pair(25, ol::eKeyCode::P),
+            std::pair(16, ol::eKeyCode::Q),
+            std::pair(19, ol::eKeyCode::R),
+            std::pair(31, ol::eKeyCode::S),
+            std::pair(20, ol::eKeyCode::T),
+            std::pair(22, ol::eKeyCode::U),
+            std::pair(47, ol::eKeyCode::V),
+            std::pair(17, ol::eKeyCode::W),
+            std::pair(45, ol::eKeyCode::X),
+            std::pair(21, ol::eKeyCode::Y),
+            std::pair(44, ol::eKeyCode::Z),
+            std::pair(59, ol::eKeyCode::F1),
+            std::pair(60, ol::eKeyCode::F2),
+            std::pair(61, ol::eKeyCode::F3),
+            std::pair(62, ol::eKeyCode::F4),
+            std::pair(63, ol::eKeyCode::F5),
+            std::pair(64, ol::eKeyCode::F6),
+            std::pair(65, ol::eKeyCode::F7),
+            std::pair(66, ol::eKeyCode::F8),
+            std::pair(67, ol::eKeyCode::F9),
+            std::pair(68, ol::eKeyCode::F10),
+            std::pair(87, ol::eKeyCode::F11),
+            std::pair(88, ol::eKeyCode::F12),
+            std::pair(183, ol::eKeyCode::F13),
+            std::pair(184, ol::eKeyCode::F14),
+            std::pair(185, ol::eKeyCode::F15),
+            std::pair(186, ol::eKeyCode::F16),
+            std::pair(187, ol::eKeyCode::F17),
+            std::pair(188, ol::eKeyCode::F18),
+            std::pair(189, ol::eKeyCode::F19),
+            std::pair(190, ol::eKeyCode::F20),
+            std::pair(191, ol::eKeyCode::F21),
+            std::pair(192, ol::eKeyCode::F22),
+            std::pair(193, ol::eKeyCode::F23),
+            std::pair(194, ol::eKeyCode::F24),
+            std::pair(1, ol::eKeyCode::Esc),
+            std::pair(11, ol::eKeyCode::Number_0),
+            std::pair(2, ol::eKeyCode::Number_1),
+            std::pair(3, ol::eKeyCode::Number_2),
+            std::pair(4, ol::eKeyCode::Number_3),
+            std::pair(5, ol::eKeyCode::Number_4),
+            std::pair(6, ol::eKeyCode::Number_5),
+            std::pair(7, ol::eKeyCode::Number_6),
+            std::pair(8, ol::eKeyCode::Number_7),
+            std::pair(9, ol::eKeyCode::Number_8),
+            std::pair(10, ol::eKeyCode::Number_9),
+
+            std::pair(12, ol::eKeyCode::Minus),
+            std::pair(13, ol::eKeyCode::Plus),
+            std::pair(14, ol::eKeyCode::Backspace),
+            std::pair(15, ol::eKeyCode::Tab),
+            std::pair(26, ol::eKeyCode::LeftBracket),
+            std::pair(27, ol::eKeyCode::RightBracket),
+            std::pair(28, ol::eKeyCode::Enter),
+            std::pair(29, ol::eKeyCode::LeftCtrl),
+            std::pair(39, ol::eKeyCode::SemiColon),
+            std::pair(40, ol::eKeyCode::Quote),
+            std::pair(41, ol::eKeyCode::Tilde),
+            std::pair(42, ol::eKeyCode::LeftShift),
+            std::pair(43, ol::eKeyCode::LeftSlash),
+            std::pair(51, ol::eKeyCode::Comma),
+            std::pair(52, ol::eKeyCode::Period),
+            std::pair(53, ol::eKeyCode::RightSlash),
+            std::pair(54, ol::eKeyCode::RightShift),
+            std::pair(56, ol::eKeyCode::LeftAlt),
+            std::pair(57, ol::eKeyCode::Space),
+            std::pair(58, ol::eKeyCode::CapsLock),
+            std::pair(69, ol::eKeyCode::NumLock),
+
+            std::pair(82, ol::eKeyCode::Numpad_0),
+            std::pair(79, ol::eKeyCode::Numpad_1),
+            std::pair(80, ol::eKeyCode::Numpad_2),
+            std::pair(81, ol::eKeyCode::Numpad_3),
+            std::pair(75, ol::eKeyCode::Numpad_4),
+            std::pair(76, ol::eKeyCode::Numpad_5),
+            std::pair(77, ol::eKeyCode::Numpad_6),
+            std::pair(71, ol::eKeyCode::Numpad_7),
+            std::pair(72, ol::eKeyCode::Numpad_8),
+            std::pair(73, ol::eKeyCode::Numpad_9),
+
+            std::pair(74, ol::eKeyCode::Subtract),
+            std::pair(78, ol::eKeyCode::Add),
+            std::pair(83, ol::eKeyCode::Decimal),
+
+            std::pair(97, ol::eKeyCode::RightCtrl),
+            std::pair(98, ol::eKeyCode::Divide),
+            std::pair(100, ol::eKeyCode::RightAlt),
+            std::pair(102, ol::eKeyCode::Home),
+            std::pair(103, ol::eKeyCode::UpArrow),
+            std::pair(104, ol::eKeyCode::PageUp),
+            std::pair(105, ol::eKeyCode::LeftArrow),
+            std::pair(106, ol::eKeyCode::RightArrow),
+            std::pair(107, ol::eKeyCode::End),
+            std::pair(108, ol::eKeyCode::DownArrow),
+            std::pair(109, ol::eKeyCode::PageDown),
+            std::pair(110, ol::eKeyCode::Insert),
+            std::pair(111, ol::eKeyCode::Delete),
+            std::pair(113, ol::eKeyCode::VolumeMute),
+            std::pair(114, ol::eKeyCode::VolumeDown),
+            std::pair(115, ol::eKeyCode::VolumeUp),
+            std::pair(119, ol::eKeyCode::Pause),
+
+            // TODO: Check if these are correct.
+            // They map to KEY_LEFTMETA and KEY_RIGHTMETA but I'm not 100% sure what META means.
+            std::pair(125, ol::eKeyCode::WindowsLeft),
+            std::pair(126, ol::eKeyCode::WindowsRight),
+
+            // TODO: Add all the Fn + {Key} options here.
+            std::pair(464, ol::eKeyCode::Fn)
     };
 
     // TODO: Look into an ordered map instead. Search operations by value shouldn't be too costly as it is binary search.
@@ -403,6 +532,4 @@ namespace ol
         // TODO: Add all the Fn + {Key} options here.
         std::pair(ol::eKeyCode::Fn, 464)
     };
-
-    // TODO: Add LinuxToKeyCode once we create the Linux Server keyboard capabilities.
 }

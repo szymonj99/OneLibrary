@@ -4,6 +4,13 @@
     #include <Windows.h>
     #include <hidusage.h>
 #elif OS_LINUX
+    #include <filesystem>
+    #include <fstream>
+    #include <vector>
+    #include <linux/input.h>
+    #include <libevdev/libevdev.h>
+    #include <libevdev/libevdev-uinput.h>
+    #include <fcntl.h>
 #elif OS_APPLE
 #endif
 
@@ -84,6 +91,12 @@ namespace ol
         virtual void m_StartRawInput() = 0;
         virtual void m_WaitForRawInput() = 0;
         virtual void m_EndRawInput() = 0;
+#elif OS_LINUX
+        std::vector<libevdev*> m_vVirtualDevices{};
+        std::vector<std::thread> m_vDeviceHandlers{};
+        std::vector<int32_t> m_vDeviceFiles{};
+
+        virtual void m_fDeviceHandler(libevdev* device) = 0;
 #endif
 
     public:
