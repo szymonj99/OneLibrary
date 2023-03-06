@@ -7,6 +7,15 @@ project(${LIBRARY_NAME} LANGUAGES CXX VERSION ${LIBRARY_VERSION} DESCRIPTION "On
 
 option(ONELIBRARY_BUILD_TESTS "Build the tests" FALSE)
 option(ONELIBRARY_USE_BACKWARDCPP "Compile OneLibrary including Backward-CPP (only active in `Debug` mode)" TRUE)
+option(ONELIBRARY_STATIC_LIB "Make a static library when TRUE. Otherwise build a shared library." FALSE)
+
+if(ONELIBRARY_STATIC_LIB)
+    message(STATUS "OneLibrary will be built as a static library")
+    set(ONELIBRARY_LIB STATIC)
+else()
+    message(STATUS "OneLibrary will be built as a shared library")
+    set(ONELIBRARY_LIB SHARED)
+endif()
 
 if(CMAKE_HOST_UNIX AND NOT CMAKE_HOST_APPLE)
     set(CMAKE_HOST_LINUX TRUE)
@@ -32,10 +41,10 @@ if(ONELIBRARY_USE_BACKWARDCPP AND CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Adding in Backward-CPP to ${PROJECT_NAME}")
     CPMAddPackage("gh:bombela/backward-cpp#90398eef20f4e7e0e939322d7e84f9c52078a325")
     list(APPEND SOURCE_FILES ${BACKWARD_ENABLE})
-    add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
+    add_library(${PROJECT_NAME} ${ONELIBRARY_LIB} ${SOURCE_FILES})
     add_backward(${PROJECT_NAME})
 else()
-    add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
+    add_library(${PROJECT_NAME} ${ONELIBRARY_LIB} ${SOURCE_FILES})
 endif()
 
 # I'll do more research as to what this actually does.
