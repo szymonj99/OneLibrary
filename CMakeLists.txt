@@ -3,11 +3,24 @@ cmake_minimum_required (VERSION 3.19 FATAL_ERROR)
 set(LIBRARY_NAME OneLibrary)
 set(LIBRARY_VERSION 0.0.2)
 
-project(${LIBRARY_NAME} LANGUAGES CXX VERSION ${LIBRARY_VERSION} DESCRIPTION "OneLibrary - Cross-Platform Input Hooking")
-
-option(ONELIBRARY_BUILD_TESTS "Build the tests" FALSE)
+option(ONELIBRARY_BUILD_TESTS "Build the tests" TRUE)
 option(ONELIBRARY_USE_BACKWARDCPP "Compile OneLibrary including Backward-CPP (only active in `Debug` mode)" TRUE)
 option(ONELIBRARY_STATIC_LIB "Make a static library when TRUE. Otherwise build a shared library." FALSE)
+option(ONELIBRARY_USE_VCPKG "Use VCPKG to manage dependencies rather than the default CPM. Note: Some dependencies may still be downloaded with CPM if they are not available through VCPKG" TRUE)
+
+if(ONELIBRARY_USE_VCPKG)
+    if(NOT DEFINED ENV{VCPKG_ROOT})
+        message(FATAL_ERROR "VCPKG_ROOT is not set!")
+    else()
+        file(REAL_PATH $ENV{VCPKG_ROOT} VCPKG_ROOT)
+        message(STATUS "VCPKG_ROOT is defined as: $ENV{VCPKG_ROOT} (Real Path: ${VCPKG_ROOT})")
+    endif()
+    # This needs to be done before calling project()
+    set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
+    message(STATUS "Using VCPKG Toolchain from: ${CMAKE_TOOLCHAIN_FILE}")
+endif()
+
+project(${LIBRARY_NAME} LANGUAGES CXX VERSION ${LIBRARY_VERSION} DESCRIPTION "OneLibrary - Cross-Platform Input Hooking")
 
 if(ONELIBRARY_STATIC_LIB)
     message(STATUS "OneLibrary will be built as a static library")
@@ -101,7 +114,7 @@ install(TARGETS ${PROJECT_NAME} PUBLIC_HEADER DESTINATION ${PROJECT_SOURCE_DIR}/
 if(ONELIBRARY_BUILD_TESTS)
     # enable_testing() needs to be here.
     # Reasoning: https://stackoverflow.com/questions/64099136/visual-studio-2019-test-explorer-did-not-find-c-google-tests
-    message(STATUS "Adding tests")
+    message(STATUS "Building tests for OneLibrary")
     enable_testing()
     add_subdirectory(${PROJECT_SOURCE_DIR}/tests)
 endif()

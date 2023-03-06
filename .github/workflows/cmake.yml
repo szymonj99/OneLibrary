@@ -23,11 +23,19 @@ jobs:
         cd /usr/include/libevdev-1.0
         sudo mv libevdev ../
 
+    - name: Set up VCPKG
+      uses: lukka/run-vcpkg@v10
+      with:
+        vcpkgGitCommitId: f3a39f1aaffe48b1190df69aab3a8657f91b632a
+
     - name: Configure CMake
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+    - name: Execute Tests
+      run: ${{github.workspace}}/build/tests/OneLibraryTests
       
   build-windows-release:
     runs-on: windows-latest
@@ -35,11 +43,19 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Set up VCPKG
+      uses: lukka/run-vcpkg@v10
+      with:
+        vcpkgGitCommitId: f3a39f1aaffe48b1190df69aab3a8657f91b632a
+
     - name: Configure CMake
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+    - name: Execute Tests
+      run: ${{github.workspace}}/build/tests/Release/OneLibraryTests.exe
       
   build-macos-release:
     runs-on: macos-latest
@@ -47,8 +63,16 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Set up VCPKG
+      uses: lukka/run-vcpkg@v10
+      with:
+        vcpkgGitCommitId: f3a39f1aaffe48b1190df69aab3a8657f91b632a
+
     - name: Configure CMake
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+    - name: Execute Tests
+      run: ${{github.workspace}}/build/tests/OneLibraryTests
