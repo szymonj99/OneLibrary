@@ -10,3 +10,5 @@ TEST_CASE("Queue can add and remove a single item", "[ThreadsafeQueue]")
     const uint32_t kOutput = queue.Get();
     REQUIRE_NOTHROW(input == kOutput);
 }
+
+// TODO: Add test cases with multiple threads accessing the queue at the same time.

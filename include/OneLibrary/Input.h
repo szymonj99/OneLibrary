@@ -30,6 +30,7 @@ namespace ol
         ol::MouseInt scroll = 0;
         // We can either: Have which buttons were clicked here
         // Or have it as an event type on the Input struct.
+		bool operator==(const ol::MouseInput&) const = default;
 	};
 
 	/**
@@ -42,6 +43,8 @@ namespace ol
          * The virtual key kode, the sate of which has been altered since the last event.
          */
         ol::eKeyCode key = ol::eKeyCode::NONE;
+
+		bool operator==(const ol::KeyboardInput&) const = default;
 	};
 
 	// This class is what will be sent from the Server to the Client.
@@ -70,6 +73,8 @@ namespace ol
 		 * Changes in keyboard state since the last event.
 		 */
 		ol::KeyboardInput keyboard = ol::KeyboardInput();
+
+		bool operator==(const ol::Input&) const = default;
 	};
 
     std::istream& operator>>(std::istream& stream, ol::eInputType& inputType);

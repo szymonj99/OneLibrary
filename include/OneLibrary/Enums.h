@@ -168,6 +168,9 @@ namespace ol
         Tilde,
         Quote,
         Fn,
-        NONE = 65535
+        NONE = 65535 // I love being inconsistent with None/NONE values being 0/65535 respectively. :)
     };
+
+    // TODO: C++20 added ranges for enums. Add them for the enum classes we are using.
+    // being() and end() functions, so we can call `for (const auto e : enum class)`.
 }

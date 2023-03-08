@@ -64,7 +64,11 @@ namespace ol
          */
         ol::ThreadsafeQueue<ol::Input> m_bufInputs{};
 
+        bool m_bRunning = true;
+        bool m_bGathering = true;
+
 #ifdef OS_WINDOWS
+        constexpr static inline uint32_t EXIT_MSG = WM_USER + 200;
         // This can get pretty janky, pretty quickly.
         // On Windows, all gatherers will have:
         // - A thread that gathers the input events/messages (I am unsure if that will be the case for other platforms as well)
@@ -74,11 +78,10 @@ namespace ol
         std::thread m_thInputGatherThread;
         HHOOK m_pHook = nullptr;
 
-        WNDCLASSEXW m_wRawInputWindowClass{};
+        WNDCLASS m_wRawInputWindowClass{};
         HWND m_hRawInputMessageWindow{};
 
         // Every input gatherer on Windows will need to provide their own implementation of these
-        // TODO: Do these need to be virtual?
 
         // Low Level Hooks
 
@@ -105,5 +108,6 @@ namespace ol
          * @return The input representative of the event that has happened.
          */
         virtual ol::Input GatherInput() = 0;
+        virtual void Toggle() = 0;
     };
 }

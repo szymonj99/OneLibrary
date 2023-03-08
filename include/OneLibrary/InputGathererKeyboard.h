@@ -13,6 +13,8 @@ namespace ol
 #ifdef OS_WINDOWS
         static inline ol::ThreadsafeQueue<ol::Input> m_bufInputs{};
         static inline bool m_bConsuming = true;
+        static inline bool m_bGathering = true;
+        static inline bool m_bRunning = true;
 
         // To avoid potential issues with calling virtual functions in the destructor, e can instead
         // call these functions which will only be defined in the current derived class and not in the base class.
@@ -49,5 +51,6 @@ namespace ol
          * @return An input object representative of the event.
          */
         ol::Input GatherInput() override;
+        void Toggle() override;
     };
 }
