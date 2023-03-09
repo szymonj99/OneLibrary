@@ -113,6 +113,7 @@ endif()
 install(TARGETS ${PROJECT_NAME} PUBLIC_HEADER DESTINATION ${PROJECT_SOURCE_DIR}/include)
 
 if(ONELIBRARY_BUILD_TESTS)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE ONELIBRARY_TESTS=1)
     # enable_testing() needs to be here.
     # Reasoning: https://stackoverflow.com/questions/64099136/visual-studio-2019-test-explorer-did-not-find-c-google-tests
     message(STATUS "Building tests for OneLibrary")

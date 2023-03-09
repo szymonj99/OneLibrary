@@ -4,9 +4,27 @@
 
 namespace fs = std::filesystem;
 
+namespace
+{
+    // Not quite a singleton pattern, but almost.
+    ol::InputGathererMouse* Instance = nullptr;
+    // 20 is just a random value I picked that should be high enough to handle all threads shutting down.
+    std::counting_semaphore<20> semShuttingDown{0};
+}
+
 ol::InputGathererMouse::InputGathererMouse(const bool kAllowConsuming)
 {
+    assert(!Instance);
+    Instance = this;
 	this->m_bAllowConsuming = kAllowConsuming;
+
+    // We add a signal handler so that libevdev_next_event can exit early if the threads are interrupted.
+    struct sigaction sa{};
+    sa.sa_handler = ol::InputGathererMouse::m_fSignalHandler;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sigaction(SIGINT, &sa, nullptr);
+
 	// Iterate over files in `/dev/input/by-path`.
 	// It is better to interact with the event files rather than `mouseX` files as they provide more information, and are not reliant on X server.
 	// Files ending in `-event-kbd` are keyboard event files.
@@ -25,12 +43,18 @@ ol::InputGathererMouse::InputGathererMouse(const bool kAllowConsuming)
 
 			this->m_vDeviceFiles.emplace_back(::open(kPath.c_str(), O_RDONLY));
 			libevdev* input{};
-			const auto r = libevdev_new_from_fd(this->m_vDeviceFiles.back(), &input);
+            const auto kReturnCode = ::libevdev_new_from_fd(this->m_vDeviceFiles.back(), &input);
+            if (kReturnCode != 0) // Error
+            {
+                std::cerr << "Failed to create a new libevdev device: " << std::strerror(-kReturnCode) << std::endl;
+                this->m_bRunning = false;
+                return;
+            }
 
 			// When we grab the input, the events are not passed to any other window.
 			if (this->m_bAllowConsuming)
 			{
-				libevdev_grab(input, LIBEVDEV_GRAB);
+				::libevdev_grab(input, LIBEVDEV_GRAB);
 			}
 
 			this->m_vVirtualDevices.push_back(input);
@@ -42,23 +66,81 @@ ol::InputGathererMouse::InputGathererMouse(const bool kAllowConsuming)
 			this->m_vDeviceHandlers.emplace_back([&](libevdev* device){ this->m_fDeviceHandler(device); }, this->m_vVirtualDevices.back());
 		}
 	}
+
+#ifdef ONELIBRARY_TESTS
+// Let's naively assume that this is being called right after the input simulator has been called.
+    // The input simulator results in a new event file being created in /dev/input
+    // This event file is created with the next sequential ID -> if event7 was present, calling off to input simulator will generate event8.
+    // We can use that here.
+    // However, we can also get the exact system path for the specific virtual input device that input simulator creates.
+    // How do we want to handle that? :thinking:
+    // Let's go wit the naive approach for now, and talk about potential improvements in the future.
+    // libevdev_uinput_get_syspath(dev) can be used to get the real path of the simulated input device
+
+    // Get the event file with the biggest X, where X is the integer appended to event files: `eventX`
+
+    fs::path simulatorPath("/dev/input");
+    std::regex eventRegex("event[0-9]+"); // eventX where X is any full number.
+    std::string eventFile{};
+    for (const auto& entry : fs::directory_iterator(simulatorPath))
+    {
+        if (std::regex_match(entry.path().filename().string(), eventRegex))
+        {
+            // The first eventX file we come across will have the biggest ID.
+            // Let's naively grab it.
+            eventFile = entry.path().filename().string();
+            break;
+        }
+    }
+
+    std::string simulatedEventFilePath("/dev/input/" + eventFile);
+    this->m_vDeviceFiles.emplace_back(::open(simulatedEventFilePath.c_str(), O_RDONLY));
+    libevdev* simulatedInput{};
+    const auto kReturnCode = ::libevdev_new_from_fd(this->m_vDeviceFiles.back(), &simulatedInput);
+
+    if (kReturnCode != 0) // Error
+    {
+        std::cerr << "Failed to create a new libevdev simulated device gatherer: " << std::strerror(-kReturnCode) << std::endl;
+    }
+
+    if (this->m_bAllowConsuming)
+    {
+        ::libevdev_grab(simulatedInput, LIBEVDEV_GRAB);
+    }
+
+    this->m_vVirtualDevices.push_back(simulatedInput);
+    this->m_vDeviceHandlers.emplace_back([&](libevdev* device){ this->m_fDeviceHandler(device); }, this->m_vVirtualDevices.back());
+#endif
 }
 
 void ol::InputGathererMouse::m_fDeviceHandler(libevdev *device)
 {
-	// TODO: Add exit condition here.
     // TODO: Add killswitch.
+    // TODO: Add support for hotplugging devices.
 
     bool setNextRelativeX = true, setNextRelativeY = true;
 	int16_t previousX = 0, previousY = 0, previousWheel = 0;
 
-	while (true)
+	while (this->m_bRunning)
 	{
-		input_event ev{};
+		::input_event ev{};
 		// Block until an input event is available.
 		// Doing this is okay because this function will be executed in a separate thread.
 		// TODO: Add error handling.
-		const auto returnCode = libevdev_next_event(device, LIBEVDEV_READ_FLAG_BLOCKING, &ev);
+        const auto kReturnCode = ::libevdev_next_event(device, LIBEVDEV_READ_FLAG_BLOCKING, &ev);
+
+        if (kReturnCode == -EINTR) // Thread interrupted
+        {
+            this->m_bRunning = false;
+            semShuttingDown.release();
+            return;
+        }
+        else if (kReturnCode != 0)
+        {
+            std::cerr << "Error when reading next event from libevdev: " << std::strerror(-kReturnCode) << std::endl;
+            this->m_bRunning = false;
+            return;
+        }
 
 		ol::Input input{};
 		input.inputType = ol::eInputType::Mouse;
@@ -267,26 +349,63 @@ void ol::InputGathererMouse::m_fDeviceHandler(libevdev *device)
             }
 		}
 
-		this->m_bufInputs.Add(input);
+        if (this->m_bGathering)
+        {
+            this->m_bufInputs.Add(input);
+        }
 	}
+}
+
+void ol::InputGathererMouse::m_fSignalHandler(const int32_t signal)
+{
+    Instance->m_bRunning = false;
 }
 
 ol::InputGathererMouse::~InputGathererMouse()
 {
+    for (auto& th: this->m_vDeviceHandlers)
+    {
+        ::pthread_kill(th.native_handle(), SIGINT);
+    }
+
+    // Wait for each thread to finish being interrupted so that we do not free any libevdev devices whilst they're still in use.
+    for (size_t i = 0; i < this->m_vDeviceHandlers.size(); i++)
+    {
+        semShuttingDown.acquire();
+    }
+
 	for (auto& virtualDevice : this->m_vVirtualDevices)
 	{
-		libevdev_free(virtualDevice);
+		::libevdev_free(virtualDevice);
 	}
 
     for (auto& fileDescriptor : this->m_vDeviceFiles)
     {
         ::close(fileDescriptor);
     }
+
+    for (auto& th : this->m_vDeviceHandlers)
+    {
+        th.join();
+    }
+
+    Instance = nullptr;
 }
 
 ol::Input ol::InputGathererMouse::GatherInput()
 {
 	return this->m_bufInputs.Get();
+}
+
+void ol::InputGathererMouse::Toggle()
+{
+    for (auto& device : this->m_vVirtualDevices)
+    {
+        ::libevdev_grab(device, this->m_bGathering ? libevdev_grab_mode::LIBEVDEV_UNGRAB : libevdev_grab_mode::LIBEVDEV_GRAB);
+    }
+
+    this->m_bGathering = !this->m_bGathering;
+    this->m_bConsuming = this->m_bGathering.operator bool();
 }
 
 #endif

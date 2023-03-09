@@ -2,53 +2,61 @@
 
 #include <OneLibrary/InputGathererMouse.h>
 
-ol::InputGathererMouse::InputGathererMouse(const bool kAllowConsuming)
+namespace
 {
-    this->m_bAllowConsuming = kAllowConsuming;
-    this->_init();
+    ol::InputGathererMouse* Instance = nullptr;
 }
 
-void ol::InputGathererMouse::_init()
+ol::InputGathererMouse::InputGathererMouse(const bool kAllowConsuming)
+{
+    assert(!Instance);
+    Instance = this;
+    this->m_bAllowConsuming = kAllowConsuming;
+    this->m_fInit();
+}
+
+void ol::InputGathererMouse::m_fInit()
 {
     // TODO: Potentially add in a check to see if m_pHook or the Raw Input Window are null.
     // That would allow this class to be extended by a third-party without having to worry about implementation intricacies.
     if (this->m_bAllowConsuming)
     {
-        this->m_StartHook();
+        this->m_fStartHook();
     }
     else
     {
-        this->m_StartRawInput();
+        this->m_fStartRawInput();
     }
 }
 
-void ol::InputGathererMouse::_terminate()
+void ol::InputGathererMouse::m_fTerminate()
 {
     if (this->m_bAllowConsuming)
     {
-        PostThreadMessageW(GetThreadId(this->m_thInputGatherThread.native_handle()), WM_QUIT, reinterpret_cast<WPARAM>(nullptr), reinterpret_cast<LPARAM>(nullptr));
-        this->m_EndHook();
+        ::PostThreadMessageW(GetThreadId(this->m_thInputGatherThread.native_handle()), WM_QUIT, reinterpret_cast<WPARAM>(nullptr), reinterpret_cast<LPARAM>(nullptr));
+        this->m_fEndHook();
     }
     else
     {
-        PostMessageW(this->m_hRawInputMessageWindow, WM_QUIT, reinterpret_cast<WPARAM>(nullptr), reinterpret_cast<LPARAM>(nullptr));
-        this->m_EndRawInput();
+        ::PostMessageW(this->m_hRawInputMessageWindow, WM_QUIT, reinterpret_cast<WPARAM>(nullptr), reinterpret_cast<LPARAM>(nullptr));
+        this->m_fEndRawInput();
     }
-    // TODO: Check if this is okay when the thread is not initialised.
+
     if (this->m_thInputGatherThread.joinable()) { this->m_thInputGatherThread.join(); }
 }
 
 ol::InputGathererMouse::~InputGathererMouse()
 {
-    this->_terminate();
+    this->m_fTerminate();
+    Instance = nullptr;
 }
 
 ol::Input ol::InputGathererMouse::GatherInput()
 {
-    return ol::InputGathererMouse::m_bufInputs.Get();
+    return this->m_bufInputs.Get();
 }
 
-void ol::InputGathererMouse::m_StartHook()
+void ol::InputGathererMouse::m_fStartHook()
 {
     std::binary_semaphore threadInitialised{0};
     this->m_thInputGatherThread = std::thread([&]
@@ -57,36 +65,37 @@ void ol::InputGathererMouse::m_StartHook()
         // PeekMessage and SetWindowsHookEx needs to be called in the same thread that will call off to GetMessage
         // Let's try doing this without the timer initially and see if we are timing out at all.
 
-        MSG msg {};
+        ::MSG msg {};
         // Do I need to do this for Raw Input as well?
         // Force the system to create a message queue.
         // https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-postthreadmessagea
-        PeekMessageW(&msg, nullptr, WM_USER, WM_USER, PM_NOREMOVE);
-        this->m_pHook = SetWindowsHookExW(WH_MOUSE_LL, &ol::InputGathererMouse::LowLevelHookProcedure, nullptr, 0);
+        ::PeekMessageW(&msg, nullptr, WM_USER, WM_USER, PM_NOREMOVE);
+        // TODO: Check if this is okay or if it's preferred to call &Instance->LowLevelHookProcedure as an example.
+        this->m_pHook = ::SetWindowsHookExW(WH_MOUSE_LL, &ol::InputGathererMouse::LowLevelHookProcedure, nullptr, 0);
         threadInitialised.release();
-        while (ol::InputGathererMouse::m_bRunning) { this->m_WaitForLowLevelHook(); }
+        while (this->m_bRunning) { this->m_fWaitForLowLevelHook(); }
     });
     threadInitialised.acquire();
 }
 
-void ol::InputGathererMouse::m_WaitForLowLevelHook()
+void ol::InputGathererMouse::m_fWaitForLowLevelHook()
 {
-    MSG msg {};
-    const auto kResult = GetMessageW(&msg, nullptr, WM_QUIT, WM_MOUSELAST);
+    ::MSG msg {};
+    const auto kResult = ::GetMessageW(&msg, nullptr, WM_QUIT, WM_MOUSELAST);
     if (kResult > 0)
     {
-        DispatchMessageW(&msg);
+        ::DispatchMessageW(&msg);
     }
     else if (kResult == 0) // WM_QUIT message
     {
-        ol::InputGathererMouse::m_bRunning = false;
+        Instance->m_bRunning = false;
         return;
     }
     else
     {
         // Maybe a function like CallError(RawInput) or CallError(LowLevelHook) ?
         std::cerr << "Error occurred when getting Low Level Hook input from a mouse" << std::endl;
-        PostQuitMessage(0);
+        ::PostQuitMessage(0);
         std::exit(0);
     }
 }
@@ -102,7 +111,7 @@ LRESULT CALLBACK ol::InputGathererMouse::LowLevelHookProcedure(const int nCode, 
     // `If nCode is less than zero, the hook procedure must pass the message to the CallNextHookEx function without further processing and should return the value returned by CallNextHookEx.`
     if (nCode != HC_ACTION)
     {
-        return CallNextHookEx(nullptr, nCode, wParam, lParam);
+        return ::CallNextHookEx(nullptr, nCode, wParam, lParam);
     }
 
     // What we could potentially do in the future is:
@@ -128,7 +137,7 @@ LRESULT CALLBACK ol::InputGathererMouse::LowLevelHookProcedure(const int nCode, 
         case WM_MOUSEMOVE:
         {
             POINT point{};
-            GetCursorPos(&point);
+            ::GetCursorPos(&point);
 
             input.eventType = ol::eEventType::MMove;
             input.mouse.x = hookStruct->pt.x - point.x;
@@ -187,32 +196,32 @@ LRESULT CALLBACK ol::InputGathererMouse::LowLevelHookProcedure(const int nCode, 
         {
             std::cerr << "Got Unhandled Message: (int) " << wParam << "\n";
             // Let's not consume an input that we haven't handled and instead just pass it.
-            return CallNextHookEx(nullptr, nCode, wParam, lParam);
+            return ::CallNextHookEx(nullptr, nCode, wParam, lParam);
         }
     }
 
     // Should we potentially do something like PostMessage or PostThreadMessage
     // So that in the event of a slow-down in the queue, the hook would not slow the system down?
     // I think with a queue length that we have specified of 4 billion, it won't be a problem.
-    if (ol::InputGathererMouse::m_bGathering)
+    if (Instance->m_bGathering)
     {
-        ol::InputGathererMouse::m_bufInputs.Add(input);
+        Instance->m_bufInputs.Add(input);
     }
 
     // if return 1, the mouse movement will be captured and not passed to further windows.
     // if return CallNextHookEx(0, nCode, wParam, lParam), the movement will be passed further to other windows.
-    return ol::InputGathererMouse::m_bConsuming ? 1 : CallNextHookEx(nullptr, nCode, wParam, lParam);
+    return Instance->m_bConsuming ? 1 : ::CallNextHookEx(nullptr, nCode, wParam, lParam);
 }
 
-void ol::InputGathererMouse::m_EndHook()
+void ol::InputGathererMouse::m_fEndHook()
 {
     if (this->m_pHook)
     {
-        UnhookWindowsHookEx(this->m_pHook);
+        ::UnhookWindowsHookEx(this->m_pHook);
     }
 }
 
-void ol::InputGathererMouse::m_StartRawInput()
+void ol::InputGathererMouse::m_fStartRawInput()
 {
     std::binary_semaphore rawInputInitialised{0};
     this->m_thInputGatherThread = std::thread([&]
@@ -220,13 +229,13 @@ void ol::InputGathererMouse::m_StartRawInput()
         this->m_wRawInputWindowClass.hInstance = nullptr;
         this->m_wRawInputWindowClass.lpszClassName = L"OneControl - Mouse Procedure";
         this->m_wRawInputWindowClass.lpfnWndProc = ol::InputGathererMouse::RawInputProcedure;
-        RegisterClassW(&this->m_wRawInputWindowClass);
+        ::RegisterClassW(&this->m_wRawInputWindowClass);
 
         // Create message window:
         // Invisible window that we use to get raw input messages.
-        this->m_hRawInputMessageWindow = CreateWindowW(this->m_wRawInputWindowClass.lpszClassName, nullptr, 0, 0, 0, 0, 0, HWND_MESSAGE, nullptr, this->m_wRawInputWindowClass.hInstance, nullptr);
+        this->m_hRawInputMessageWindow = ::CreateWindowW(this->m_wRawInputWindowClass.lpszClassName, nullptr, 0, 0, 0, 0, 0, HWND_MESSAGE, nullptr, this->m_wRawInputWindowClass.hInstance, nullptr);
 
-        RAWINPUTDEVICE rawInput[1]{};
+        ::RAWINPUTDEVICE rawInput[1]{};
 
         rawInput[0].usUsagePage = HID_USAGE_PAGE_GENERIC;
         rawInput[0].usUsage = HID_USAGE_GENERIC_MOUSE;
@@ -237,7 +246,7 @@ void ol::InputGathererMouse::m_StartRawInput()
         rawInput[0].dwFlags = RIDEV_INPUTSINK | MOUSE_MOVE_RELATIVE;
         rawInput[0].hwndTarget = this->m_hRawInputMessageWindow;
 
-        if (!RegisterRawInputDevices(rawInput, 1, sizeof(rawInput[0])))
+        if (!::RegisterRawInputDevices(rawInput, 1, sizeof(rawInput[0])))
         {
             std::cerr << "Registering of raw input devices failed.\n";
             std::exit(-1);
@@ -245,38 +254,38 @@ void ol::InputGathererMouse::m_StartRawInput()
 
         // Although I'm not sure if this is necessary for raw input, we do what we did for low level hooks.
         // We force the system to create a message queue on this thread.
-        MSG msg{};
-        PeekMessageW(&msg, this->m_hRawInputMessageWindow, WM_USER, WM_USER, PM_NOREMOVE);
+        ::MSG msg{};
+        ::PeekMessageW(&msg, this->m_hRawInputMessageWindow, WM_USER, WM_USER, PM_NOREMOVE);
         rawInputInitialised.release();
-        while (ol::InputGathererMouse::m_bRunning) { this->m_WaitForRawInput(); }
+        while (this->m_bRunning) { this->m_fWaitForRawInput(); }
     });
     rawInputInitialised.acquire();
 }
 
-void ol::InputGathererMouse::m_WaitForRawInput()
+void ol::InputGathererMouse::m_fWaitForRawInput()
 {
-    MSG msg {};
+    ::MSG msg {};
     // Using the raw input message window here is okay as we have registered it as a RIDEV_INPUTSINK
     // Unlike Low Level hooks, where the hWnd has to be nullptr.
-    const auto kResult = GetMessageW(&msg, this->m_hRawInputMessageWindow, WM_QUIT, WM_INPUT);
+    const auto kResult = ::GetMessageW(&msg, this->m_hRawInputMessageWindow, WM_QUIT, WM_INPUT);
 
     if (kResult > 0)
     {
         // Note: Calling TranslateMessage(&msg); is only necessary for keyboard input.
         // https://learn.microsoft.com/en-us/windows/win32/learnwin32/window-messages
         // Hand off every message to our Raw Input Procedure
-        DispatchMessageW(&msg);
+        ::DispatchMessageW(&msg);
     }
     else if (kResult == 0) // WM_QUIT message
     {
-        ol::InputGathererMouse::m_bRunning = false;
+        this->m_bRunning = false;
         return;
     }
     else
     {
         // TODO: Add error handling and correct error codes here.
         std::cerr << "Error occurred when getting Raw Input from a mouse" << std::endl;
-        PostQuitMessage(0);
+        ::PostQuitMessage(0);
         std::exit(0);
     }
 }
@@ -291,9 +300,9 @@ LRESULT CALLBACK ol::InputGathererMouse::RawInputProcedure(const HWND hWnd, cons
         case WM_INPUT:
         {
             UINT dwSize = 0;
-            GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, nullptr, &dwSize, sizeof(RAWINPUTHEADER));
+            ::GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, nullptr, &dwSize, sizeof(RAWINPUTHEADER));
             const auto lpb = std::make_shared<BYTE[]>(dwSize);
-            if (!lpb || (GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, lpb.get(), &dwSize,
+            if (!lpb || (::GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, lpb.get(), &dwSize,
                                          sizeof(RAWINPUTHEADER)) != dwSize)) {
                 std::cerr << "Raw Input Data size is not correct (mouse)" << std::endl;
                 return 0;
@@ -363,23 +372,23 @@ LRESULT CALLBACK ol::InputGathererMouse::RawInputProcedure(const HWND hWnd, cons
                 }
             }
 
-            if (ol::InputGathererMouse::m_bGathering)
+            if (Instance->m_bGathering)
             {
-                ol::InputGathererMouse::m_bufInputs.Add(input);
+                Instance->m_bufInputs.Add(input);
             }
 
             return 0;
         }
         default:
         {
-            return DefWindowProc(hWnd, message, wParam, lParam);
+            return ::DefWindowProc(hWnd, message, wParam, lParam);
         }
     }
 }
 
-void ol::InputGathererMouse::m_EndRawInput()
+void ol::InputGathererMouse::m_fEndRawInput()
 {
-    RAWINPUTDEVICE rawInput[1]{};
+    ::RAWINPUTDEVICE rawInput[1]{};
 
     rawInput[0].usUsagePage = HID_USAGE_PAGE_GENERIC;
     rawInput[0].usUsage = HID_USAGE_GENERIC_MOUSE;
@@ -390,7 +399,7 @@ void ol::InputGathererMouse::m_EndRawInput()
     rawInput[0].hwndTarget = nullptr;
 
     // This acts as unregistering the raw input device: https://gamedev.net/forums/topic/629795-unregistering-raw-input/4970645/
-    if (!RegisterRawInputDevices(rawInput, 1, sizeof(rawInput[0])))
+    if (!::RegisterRawInputDevices(rawInput, 1, sizeof(rawInput[0])))
     {
         std::cerr << "Unregistering of raw input devices failed.\n";
         // TODO: Add enums for error messages
@@ -400,8 +409,8 @@ void ol::InputGathererMouse::m_EndRawInput()
 
 void ol::InputGathererMouse::Toggle()
 {
-    ol::InputGathererMouse::m_bGathering = !ol::InputGathererMouse::m_bGathering;
-    ol::InputGathererMouse::m_bConsuming = ol::InputGathererMouse::m_bGathering;
+    this->m_bGathering = !this->m_bGathering;
+    this->m_bConsuming = this->m_bGathering.operator bool();
 }
 
 #endif

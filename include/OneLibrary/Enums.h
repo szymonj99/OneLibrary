@@ -67,7 +67,6 @@ namespace ol
         DownArrow,
         Select,
         Print,
-        Execute,
         PrintScreen,
         Insert,
         Delete,
@@ -123,7 +122,7 @@ namespace ol
         Numpad_9,
         Multiply,
         Add,
-        Separator,
+        // Separator, // No longer used on non-IBM Keyboards, Comma is used instead.
         Subtract,
         Decimal,
         Divide,

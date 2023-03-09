@@ -11,24 +11,20 @@ namespace ol
     {
     private:
 #ifdef OS_WINDOWS
-        static inline ol::ThreadsafeQueue<ol::Input> m_bufInputs{};
-        static inline bool m_bConsuming = true;
-        static inline bool m_bGathering = true;
-
         // To avoid potential issues with calling virtual functions in the destructor, e can instead
         // call these functions which will only be defined in the current derived class and not in the base class.
         // These are currently only called on Windows.
         // Do _NOT_ call these by yourself.
-        void _init();
-        void _terminate();
+        void m_fInit();
+        void m_fTerminate();
 
-        void m_StartHook() override;
-        void m_WaitForLowLevelHook() override;
-        void m_EndHook() override;
+        void m_fStartHook() override;
+        void m_fWaitForLowLevelHook() override;
+        void m_fEndHook() override;
 
-        void m_StartRawInput() override;
-        void m_WaitForRawInput() override;
-        void m_EndRawInput() override;
+        void m_fStartRawInput() override;
+        void m_fWaitForRawInput() override;
+        void m_fEndRawInput() override;
 
         // This is what's called every time a low-level mouse event happens.
         static LRESULT CALLBACK LowLevelHookProcedure(const int nCode, const WPARAM wParam, const LPARAM lParam);
@@ -36,6 +32,8 @@ namespace ol
         static LRESULT CALLBACK RawInputProcedure(const HWND hWnd, const UINT message, const WPARAM wParam, const LPARAM lParam);
 #elif OS_LINUX
         void m_fDeviceHandler(libevdev* device) override;
+        // TODO: Figure out if we want to include this in the base class :thinking:
+        static void m_fSignalHandler(const int32_t signal);
 #endif
 
     public:

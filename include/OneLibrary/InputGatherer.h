@@ -11,6 +11,10 @@
     #include <libevdev/libevdev.h>
     #include <libevdev/libevdev-uinput.h>
     #include <fcntl.h>
+    #include <csignal>
+    #include <cerrno>
+    #include <cstring>
+    #include <regex>
 #elif OS_APPLE
 #endif
 
@@ -19,6 +23,7 @@
 #include <utility>
 #include <cstdint>
 #include <thread>
+#include <cassert>
 
 #include <OneLibrary/Constants.h>
 #include <OneLibrary/Enums.h>
@@ -28,9 +33,6 @@
 
 namespace ol
 {
-    // This is not thread-safe.
-    // In fact, you should only ever create one Mouse/Keyboard Sender at any time.
-    // TODO: Implement this as a singleton potentially, or some other approach to prevent multiple instances of this.
     /**
      * The base class that other gatherers inherit from. How this works differs per platform, but the end result is consistent between platforms.
      */
@@ -53,22 +55,21 @@ namespace ol
         /**
          * If true, this object is allowed to consume the inputs it is set to gather.
          */
-        bool m_bAllowConsuming = true;
+        std::atomic<bool> m_bAllowConsuming = true;
         /**
          * If true, this object is consuming inputs. Those inputs will not be passed to other windows or event listeners.
          * TODO: Look into this a little bit more. Raw Input should in theory be m_bConsuming = false, and m_bGathering = true or similar.
          */
-        bool m_bConsuming = true; // If true, the input is consumed and the message is not passed forward.
+        std::atomic<bool> m_bConsuming = true; // If true, the input is consumed and the message is not passed forward.
         /**
          * A buffer that stores the input events.
          */
         ol::ThreadsafeQueue<ol::Input> m_bufInputs{};
 
-        bool m_bRunning = true;
-        bool m_bGathering = true;
+        std::atomic<bool> m_bRunning = true;
+        std::atomic<bool> m_bGathering = true;
 
 #ifdef OS_WINDOWS
-        constexpr static inline uint32_t EXIT_MSG = WM_USER + 200;
         // This can get pretty janky, pretty quickly.
         // On Windows, all gatherers will have:
         // - A thread that gathers the input events/messages (I am unsure if that will be the case for other platforms as well)
@@ -85,15 +86,15 @@ namespace ol
 
         // Low Level Hooks
 
-        virtual void m_StartHook() = 0;
-        virtual void m_WaitForLowLevelHook() = 0;
-        virtual void m_EndHook() = 0;
+        virtual void m_fStartHook() = 0;
+        virtual void m_fWaitForLowLevelHook() = 0;
+        virtual void m_fEndHook() = 0;
 
         // Raw Input
 
-        virtual void m_StartRawInput() = 0;
-        virtual void m_WaitForRawInput() = 0;
-        virtual void m_EndRawInput() = 0;
+        virtual void m_fStartRawInput() = 0;
+        virtual void m_fWaitForRawInput() = 0;
+        virtual void m_fEndRawInput() = 0;
 #elif OS_LINUX
         std::vector<libevdev*> m_vVirtualDevices{};
         std::vector<std::thread> m_vDeviceHandlers{};
