@@ -16,7 +16,9 @@ TEST_CASE("Mouse Gatherer retrieves event of Mouse Simulator", "[InputGathererMo
     input.eventType = ol::eEventType::MMove;
     input.mouse.x = 10;
     input.mouse.y = 0;
-
+    // This fails on Windows.
+    // I think that's because of mouse acceleration or some multiplier.
+    // When let's say x = 10, the input we capture is x = 7.
     kSimulator->PerformInput(input);
     const auto kSimulatedInput = kMouse->GatherInput();
     REQUIRE(input == kSimulatedInput);
