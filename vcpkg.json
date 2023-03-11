@@ -5,7 +5,7 @@
   "description": "Cross-Platform input-hooking library in C++.",
   "homepage": "https://github.com/szymonj99/OneLibrary",
   "license": "GPL-3.0",
-  "supports": "(windows | osx | linux) & x64",
+  "supports": "(windows | linux) & x64",
   "dependencies": [
     {
       "name": "vcpkg-cmake",

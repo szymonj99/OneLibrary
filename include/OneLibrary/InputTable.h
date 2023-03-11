@@ -32,7 +32,6 @@ namespace ol
         std::pair(0x28, ol::eKeyCode::DownArrow),
         std::pair(0x29, ol::eKeyCode::Select),
         std::pair(0x2A, ol::eKeyCode::Print),
-        std::pair(0x2B, ol::eKeyCode::Execute),
         std::pair(0x2C, ol::eKeyCode::PrintScreen),
         std::pair(0x2D, ol::eKeyCode::Insert),
         std::pair(0x2E, ol::eKeyCode::Delete),
@@ -88,7 +87,6 @@ namespace ol
         std::pair(0x69, ol::eKeyCode::Numpad_9),
         std::pair(0x6A, ol::eKeyCode::Multiply),
         std::pair(0x6B, ol::eKeyCode::Add),
-        std::pair(0x6C, ol::eKeyCode::Separator),
         std::pair(0x6D, ol::eKeyCode::Subtract),
         std::pair(0x6E, ol::eKeyCode::Decimal),
         std::pair(0x6F, ol::eKeyCode::Divide),
@@ -260,6 +258,14 @@ namespace ol
             std::pair(114, ol::eKeyCode::VolumeDown),
             std::pair(115, ol::eKeyCode::VolumeUp),
             std::pair(119, ol::eKeyCode::Pause),
+            std::pair(353, ol::eKeyCode::Select),
+            std::pair(355, ol::eKeyCode::Clear),
+            std::pair(210, ol::eKeyCode::Print),
+            std::pair(99, ol::eKeyCode::PrintScreen), //KEY_SYSRQ
+            std::pair(138, ol::eKeyCode::Help),
+            std::pair(139, ol::eKeyCode::Applications),
+            std::pair(55, ol::eKeyCode::Multiply),
+            std::pair(70, ol::eKeyCode::ScrollLock),
 
             // TODO: Check if these are correct.
             // They map to KEY_LEFTMETA and KEY_RIGHTMETA but I'm not 100% sure what META means.
@@ -294,7 +300,6 @@ namespace ol
             std::pair(ol::eKeyCode::DownArrow, 0x28),
             std::pair(ol::eKeyCode::Select, 0x29),
             std::pair(ol::eKeyCode::Print, 0x2A),
-            std::pair(ol::eKeyCode::Execute, 0x2B),
             std::pair(ol::eKeyCode::PrintScreen, 0x2C),
             std::pair(ol::eKeyCode::Insert, 0x2D),
             std::pair(ol::eKeyCode::Delete, 0x2E),
@@ -350,7 +355,6 @@ namespace ol
             std::pair(ol::eKeyCode::Numpad_9, 0x69),
             std::pair(ol::eKeyCode::Multiply, 0x6A),
             std::pair(ol::eKeyCode::Add, 0x6B),
-            std::pair(ol::eKeyCode::Separator, 0x6C),
             std::pair(ol::eKeyCode::Subtract, 0x6D),
             std::pair(ol::eKeyCode::Decimal, 0x6E),
             std::pair(ol::eKeyCode::Divide, 0x6F),
@@ -500,8 +504,6 @@ namespace ol
         std::pair(ol::eKeyCode::Numpad_8, 72),
         std::pair(ol::eKeyCode::Numpad_9, 73),
 
-
-
         std::pair(ol::eKeyCode::Subtract, 74),
         std::pair(ol::eKeyCode::Add, 78),
         std::pair(ol::eKeyCode::Decimal, 83),
@@ -528,6 +530,14 @@ namespace ol
         // They map to KEY_LEFTMETA and KEY_RIGHTMETA but I'm not 100% sure what META means.
         std::pair(ol::eKeyCode::WindowsLeft, 125),
         std::pair(ol::eKeyCode::WindowsRight, 126),
+        std::pair(ol::eKeyCode::Clear, 355),
+        std::pair(ol::eKeyCode::Select, 353),
+        std::pair(ol::eKeyCode::Print, 210),
+        std::pair(ol::eKeyCode::PrintScreen, 99),
+        std::pair(ol::eKeyCode::Help, 138),
+        std::pair(ol::eKeyCode::Applications, 139),
+        std::pair(ol::eKeyCode::Multiply, 55),
+        std::pair(ol::eKeyCode::ScrollLock, 70),
 
         // TODO: Add all the Fn + {Key} options here.
         std::pair(ol::eKeyCode::Fn, 464)

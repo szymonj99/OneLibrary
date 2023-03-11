@@ -3,6 +3,8 @@
 namespace ol
 {
     // Note: StringStreams use the " " space as a delimiter.
+    // TODO: It would be nice to improve the format of how these are serialised.
+    // Doing so would allow us to call std::cout and have the output actually be readable rather than having just a few numbers together.
 
     std::istream& operator>>(std::istream& stream, ol::eInputType& inputType)
     {
