@@ -66,12 +66,13 @@ namespace ol
         stream >> input.eventType;
         stream >> input.mouse;
         stream >> input.keyboard;
+        stream >> input.clipboard;
         return stream;
     }
 
     std::ostream& operator<<(std::ostream& stream, const ol::Input& kInput)
     {
-        stream << kInput.inputType << " " << kInput.eventType << " " << kInput.mouse << " " << kInput.keyboard;
+        stream << kInput.inputType << " " << kInput.eventType << " " << kInput.mouse << " " << kInput.keyboard << " " << kInput.clipboard;
         return stream;
     }
 
@@ -189,6 +190,7 @@ namespace ol
         stream >> input.eventType;
         stream >> input.mouse;
         stream >> input.keyboard;
+        stream >> input.clipboard;
         return stream;
     }
 
@@ -198,18 +200,19 @@ namespace ol
         stream >> input.eventType;
         stream >> input.mouse;
         stream >> input.keyboard;
+        stream >> input.clipboard;
         return stream;
     }
 
     std::stringstream& operator<<(std::stringstream& stream, const ol::Input& kInput)
     {
-        stream << kInput.inputType << " " << kInput.eventType << " " << kInput.mouse << " " << kInput.keyboard;
+        stream << kInput.inputType << " " << kInput.eventType << " " << kInput.mouse << " " << kInput.keyboard << " " << kInput.clipboard;
         return stream;
     }
 
     std::ostringstream& operator<<(std::ostringstream& stream, const ol::Input& kInput)
     {
-        stream << kInput.inputType << " " << kInput.eventType << " " << kInput.mouse << " " << kInput.keyboard;
+        stream << kInput.inputType << " " << kInput.eventType << " " << kInput.mouse << " " << kInput.keyboard << " " << kInput.clipboard;
         return stream;
     }
 }
