@@ -7,6 +7,7 @@
 
 #include <OneLibrary/Constants.h>
 #include <OneLibrary/Enums.h>
+#include <OneLibrary/Clipboard.h>
 
 namespace ol
 {
@@ -52,6 +53,8 @@ namespace ol
 	// In the future, this could be made ASN.1-compliant.
     // TODO: Potentially turn this into a class
     // So that we can construct it with a type.
+	// Should each input have some clipboard data?
+	// Doing so would allow us to use the same pattern that we have already
 	/**
 	 * This is a platform-agnostic approach to sending the input events between different machines.
 	 */
@@ -73,6 +76,8 @@ namespace ol
 		 * Changes in keyboard state since the last event.
 		 */
 		ol::KeyboardInput keyboard = ol::KeyboardInput();
+
+		ol::Clipboard clipboard = ol::Clipboard();
 
 		bool operator==(const ol::Input&) const = default;
 	};

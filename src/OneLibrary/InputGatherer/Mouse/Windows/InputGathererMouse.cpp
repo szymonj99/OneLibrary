@@ -405,6 +405,7 @@ void ol::InputGathererMouse::m_fEndRawInput()
         // TODO: Add enums for error messages
         std::exit(-1);
     }
+    ::DestroyWindow(this->m_hRawInputMessageWindow);
 }
 
 void ol::InputGathererMouse::Toggle()

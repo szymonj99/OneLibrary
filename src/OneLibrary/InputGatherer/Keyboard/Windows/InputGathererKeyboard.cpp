@@ -363,6 +363,7 @@ void ol::InputGathererKeyboard::m_fEndRawInput()
         // TODO: Properly define error codes.
         std::exit(-1);
     }
+    ::DestroyWindow(this->m_hRawInputMessageWindow);
 }
 
 void ol::InputGathererKeyboard::Toggle()

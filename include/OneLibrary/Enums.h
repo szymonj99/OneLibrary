@@ -10,7 +10,8 @@ namespace ol
         // In the future, we could implement something like `gamepad`, `steering wheel`, `bluetooth controller` etc.
 		None = 0,
         Mouse,
-		Keyboard
+		Keyboard,
+        Clipboard
 	};
 
     // The problem:
@@ -28,7 +29,8 @@ namespace ol
         MButtonMiddleUp,
         MScroll,
         KBKeyDown,
-        KBKeyUp
+        KBKeyUp,
+        ClipboardChange
     };
 
     // TODO: I wonder if we can support for example:

@@ -11,6 +11,12 @@ namespace ol
     {
     private:
 #ifdef OS_WINDOWS
+        std::thread m_thInputGatherThread;
+        HHOOK m_pHook = nullptr;
+
+        WNDCLASS m_wRawInputWindowClass{};
+        HWND m_hRawInputMessageWindow{};
+
         // To avoid potential issues with calling virtual functions in the destructor, e can instead
         // call these functions which will only be defined in the current derived class and not in the base class.
         // These are currently only called on Windows.
@@ -18,13 +24,13 @@ namespace ol
         void m_fInit();
         void m_fTerminate();
 
-        void m_fStartHook() override;
-        void m_fWaitForLowLevelHook() override;
-        void m_fEndHook() override;
+        void m_fStartHook();
+        void m_fWaitForLowLevelHook();
+        void m_fEndHook();
 
-        void m_fStartRawInput() override;
-        void m_fWaitForRawInput() override;
-        void m_fEndRawInput() override;
+        void m_fStartRawInput();
+        void m_fWaitForRawInput();
+        void m_fEndRawInput();
 
         // This is what's called every time a low-level mouse event happens.
         static LRESULT CALLBACK LowLevelHookProcedure(const int nCode, const WPARAM wParam, const LPARAM lParam);
