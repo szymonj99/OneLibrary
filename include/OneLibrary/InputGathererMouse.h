@@ -43,9 +43,7 @@ namespace ol
          */
         explicit InputGathererMouse(const bool kAllowConsuming = true);
         ~InputGathererMouse();
-        [[nodiscard]] ol::Input GatherInput() override;
         void Toggle() override;
         void Shutdown() override;
-        [[nodiscard]] uint64_t AvailableInputs() override;
     };
 }

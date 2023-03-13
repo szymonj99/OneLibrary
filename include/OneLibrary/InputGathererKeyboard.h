@@ -47,13 +47,7 @@ namespace ol
          */
         explicit InputGathererKeyboard(const bool kAllowConsuming = true);
         ~InputGathererKeyboard();
-        /**
-         * Blocks until a keyboard event happens.
-         * @return An input object representative of the event.
-         */
-        [[nodiscard]] ol::Input GatherInput() override;
         void Toggle() override;
         void Shutdown() override;
-        [[nodiscard]] uint64_t AvailableInputs() override;
     };
 }

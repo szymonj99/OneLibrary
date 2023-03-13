@@ -14,6 +14,7 @@ namespace
 ol::InputGathererKeyboard::InputGathererKeyboard(const bool allowConsuming)
 {
     assert(!Instance);
+    if (Instance) { throw std::runtime_error{"Only one Keyboard Gatherer can be active at once."}; }
     Instance = this;
 	this->m_bAllowConsuming = allowConsuming;
     this->m_fInit();
@@ -53,23 +54,18 @@ void ol::InputGathererKeyboard::m_fTerminate()
 
 ol::InputGathererKeyboard::~InputGathererKeyboard()
 {
-    if (!this->m_bCalledTerminate) { this->m_fTerminate(); }
+    this->Shutdown();
     Instance = nullptr;
-}
-
-ol::Input ol::InputGathererKeyboard::GatherInput()
-{
-    return this->m_bufInputs.Get();
 }
 
 void ol::InputGathererKeyboard::m_fStartHook()
 {
     // Don't return until the hook has been set up.
-    std::binary_semaphore threadInitialised{0};
+    std::binary_semaphore hookInitialised{0};
     this->m_thInputGatherThread = std::jthread{[&](const std::stop_token& kStopToken)
     {
         // TODO: Potentially call Shutdown here?
-        std::stop_callback stopCallback{kStopToken, [&]{ }};
+        std::stop_callback stopCallback{kStopToken, [&]{ this->Shutdown(); }};
 
         // This thread does GetMessage and sends the input received to the queue.
         // PeekMessage and SetWindowsHookEx needs to be called in the same thread that will call off to GetMessage
@@ -81,12 +77,12 @@ void ol::InputGathererKeyboard::m_fStartHook()
         ::PeekMessageW(&msg, nullptr, WM_USER, WM_USER, PM_NOREMOVE);
         // TODO: Check if calling &Instance::LowLevelHookProcedure would make sense here.
         this->m_pHook = ::SetWindowsHookExW(WH_KEYBOARD_LL, &ol::InputGathererKeyboard::LowLevelHookProcedure, nullptr, 0);
-        threadInitialised.release();
+        hookInitialised.release();
 
         while (this->m_bRunning) { this->m_fWaitForLowLevelHook(); }
     }};
 
-    threadInitialised.acquire();
+    hookInitialised.acquire();
 }
 
 void ol::InputGathererKeyboard::m_fWaitForLowLevelHook()
@@ -190,6 +186,7 @@ LRESULT CALLBACK ol::InputGathererKeyboard::LowLevelHookProcedure(const int nCod
 
     // if return 1, the mouse movements will NOT be passed along further
     // if return CallNextHookEx(0, nCode, wParam, lParam), the movement will be passed along further
+    // TODO: We may potentially fix the stuck toggle/shutdown key here.
     return Instance->m_bConsuming ? 1 : ::CallNextHookEx(nullptr, nCode, wParam, lParam);
 }
 
@@ -209,7 +206,7 @@ void ol::InputGathererKeyboard::m_fStartRawInput()
     this->m_thInputGatherThread = std::jthread([&](const std::stop_token& kStopToken)
     {
         // TODO: Potentially call Shutdown here?
-        std::stop_callback stopCallback{kStopToken, [&]{ }};
+        std::stop_callback stopCallback{kStopToken, [&]{ this->Shutdown(); }};
 
         this->m_wRawInputWindowClass.hInstance = nullptr;
         this->m_wRawInputWindowClass.lpszClassName = L"OneControl - Keyboard Procedure";
@@ -382,12 +379,8 @@ void ol::InputGathererKeyboard::Toggle()
 
 void ol::InputGathererKeyboard::Shutdown()
 {
+    this->m_bufInputs.Interrupt();
     this->m_fTerminate();
-}
-
-uint64_t ol::InputGathererKeyboard::AvailableInputs()
-{
-    return this->m_bufInputs.Length();
 }
 
 #endif

@@ -1,5 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 
+#include <thread>
+
 #include <OneLibrary/ThreadsafeQueue.h>
 
 TEST_CASE("Queue can add and remove a single item", "[ThreadsafeQueue]")
@@ -12,3 +14,21 @@ TEST_CASE("Queue can add and remove a single item", "[ThreadsafeQueue]")
 }
 
 // TODO: Add test cases with multiple threads accessing the queue at the same time.
+TEST_CASE("Interrupting while Getting from an empty queue raises an exception", "[ThreadsafeQueue]")
+{
+    ol::ThreadsafeQueue<uint32_t> queue{};
+
+    std::jthread th{[&](){ std::this_thread::sleep_for(std::chrono::seconds{1}); queue.Interrupt(); }};
+
+    bool ex = false;
+    try
+    {
+        queue.Get();
+    }
+    catch (const ol::InterruptException& e)
+    {
+        ex = true;
+    }
+
+    REQUIRE(ex);
+}
