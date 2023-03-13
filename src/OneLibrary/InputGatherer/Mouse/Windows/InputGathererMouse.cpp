@@ -45,14 +45,11 @@ void ol::InputGathererMouse::m_fTerminate()
         ::PostMessageW(this->m_hRawInputMessageWindow, WM_QUIT, reinterpret_cast<WPARAM>(nullptr), reinterpret_cast<LPARAM>(nullptr));
         this->m_fEndRawInput();
     }
-
-    if (this->m_thInputGatherThread.joinable()) { this->m_thInputGatherThread.join(); }
 }
 
 ol::InputGathererMouse::~InputGathererMouse()
 {
-    this->m_bufInputs.Interrupt();
-    this->m_fTerminate();
+    this->Shutdown();
     Instance = nullptr;
 }
 
@@ -416,8 +413,8 @@ void ol::InputGathererMouse::Toggle()
 
 void ol::InputGathererMouse::Shutdown()
 {
-    this->m_fTerminate();
     this->m_bufInputs.Interrupt();
+    this->m_fTerminate();
 }
 
 #endif
