@@ -20,7 +20,7 @@ namespace ol
         //std::numeric_limits<uint32_t>::max()
         std::counting_semaphore<2147483647> m_sItems{0};
         std::binary_semaphore m_sMutex{1};
-        std::atomic<uint64_t> m_uiLength = 0;
+        std::atomic<uint64_t> m_uiLength{0};
 
     public:
         [[nodiscard]] ThreadsafeQueue() noexcept = default;
