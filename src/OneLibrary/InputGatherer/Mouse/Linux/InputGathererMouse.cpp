@@ -425,4 +425,9 @@ void ol::InputGathererMouse::Toggle()
     this->m_bConsuming = this->m_bGathering.operator bool();
 }
 
+uint64_t ol::InputGathererMouse::AvailableInputs()
+{
+    return this->m_bufInputs.Length();
+}
+
 #endif

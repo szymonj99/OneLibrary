@@ -85,5 +85,6 @@ namespace ol
         [[nodiscard]] virtual ol::Input GatherInput() = 0;
         virtual void Toggle() = 0;
         virtual void Shutdown() = 0;
+        [[nodiscard]] virtual uint64_t AvailableInputs() = 0;
     };
 }

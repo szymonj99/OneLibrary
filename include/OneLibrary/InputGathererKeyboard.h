@@ -51,8 +51,9 @@ namespace ol
          * Blocks until a keyboard event happens.
          * @return An input object representative of the event.
          */
-        ol::Input GatherInput() override;
+        [[nodiscard]] ol::Input GatherInput() override;
         void Toggle() override;
         void Shutdown() override;
+        [[nodiscard]] uint64_t AvailableInputs() override;
     };
 }

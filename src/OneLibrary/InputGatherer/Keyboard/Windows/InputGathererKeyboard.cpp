@@ -385,4 +385,9 @@ void ol::InputGathererKeyboard::Shutdown()
     this->m_fTerminate();
 }
 
+uint64_t ol::InputGathererKeyboard::AvailableInputs()
+{
+    return this->m_bufInputs.Length();
+}
+
 #endif

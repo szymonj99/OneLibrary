@@ -422,4 +422,9 @@ void ol::InputGathererMouse::Shutdown()
     this->m_fTerminate();
 }
 
+uint64_t ol::InputGathererMouse::AvailableInputs()
+{
+    return this->m_bufInputs.Length();
+}
+
 #endif

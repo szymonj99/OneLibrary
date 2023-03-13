@@ -19,8 +19,9 @@ namespace ol
         // TODO: Should kAllowConsuming do anything for clipboard events?
         explicit InputGathererClipboard(const bool kAllowConsuming = true);
         ~InputGathererClipboard();
-        ol::Input GatherInput() override;
+        [[nodiscard]] ol::Input GatherInput() override;
         void Toggle() override;
         void Shutdown() override;
+        [[nodiscard]] uint64_t AvailableInputs() override;
     };
 }

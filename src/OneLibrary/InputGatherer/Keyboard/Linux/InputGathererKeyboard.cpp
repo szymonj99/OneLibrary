@@ -270,4 +270,9 @@ void ol::InputGathererKeyboard::Toggle()
     this->m_bConsuming = this->m_bGathering.operator bool();
 }
 
+uint64_t ol::InputGathererKeyboard::AvailableInputs()
+{
+    return this->m_bufInputs.Length();
+}
+
 #endif
