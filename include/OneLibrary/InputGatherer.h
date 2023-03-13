@@ -40,6 +40,8 @@ namespace ol
     {
     protected:
         // We don't want people to be able to instantiate this abstract base class.
+        // We do not want someone to create an InputGatherer without specifying what it is, so let's delete the constructor for this abstract base class.
+        // Or do we want to make the constructor private instead?
         InputGatherer() = default;
         ~InputGatherer() = default;
 
@@ -65,23 +67,24 @@ namespace ol
         std::atomic<bool> m_bRunning = true;
         std::atomic<bool> m_bGathering = true;
 
+        std::atomic<bool> m_bCalledTerminate = false;
+
 #ifdef OS_LINUX
         std::vector<libevdev*> m_vVirtualDevices{};
-        std::vector<std::thread> m_vDeviceHandlers{};
+        std::vector<std::jthread> m_vDeviceHandlers{};
         std::vector<int32_t> m_vDeviceFiles{};
 
         virtual void m_fDeviceHandler(libevdev* device) = 0;
 #endif
 
     public:
-        // We do not want someone to create an InputGatherer without specifying what it is, so let's delete the constructor for this abstract base class.
-        // Or do we want to make the constructor private instead?
-
         /**
          * Block until this object gathered some input from the user.
          * @return The input representative of the event that has happened.
          */
         [[nodiscard]] virtual ol::Input GatherInput() = 0;
         virtual void Toggle() = 0;
+        virtual void Shutdown() = 0;
+        [[nodiscard]] virtual uint64_t AvailableInputs() = 0;
     };
 }

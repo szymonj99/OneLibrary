@@ -20,6 +20,8 @@ namespace ol
         //std::numeric_limits<uint32_t>::max()
         std::counting_semaphore<2147483647> m_sItems{0};
         std::binary_semaphore m_sMutex{1};
+        std::atomic<uint64_t> m_uiLength{0};
+
     public:
         [[nodiscard]] ThreadsafeQueue() noexcept = default;
         /**
@@ -28,11 +30,13 @@ namespace ol
          */
         [[nodiscard]] T Get() noexcept
         {
+            // Could I make my own wrapper for this that would throw my own exception when a thread is timed out?
             this->m_sItems.acquire();
             this->m_sMutex.acquire();
 
             const T value = this->m_qCollection.front();
             this->m_qCollection.pop();
+            this->m_uiLength--;
 
             this->m_sMutex.release();
 
@@ -53,9 +57,15 @@ namespace ol
             this->m_sMutex.acquire();
 
             this->m_qCollection.push(item);
+            this->m_uiLength++;
 
             this->m_sItems.release();
             this->m_sMutex.release();
         };
+
+        [[nodiscard]] [[gnu::pure]] uint64_t Length() noexcept
+        {
+            return this->m_uiLength;
+        }
     };
 }

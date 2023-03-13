@@ -9,7 +9,7 @@ namespace
 
 /**
  * Create an InputGatherer responsible for gathering input from the keyboard.
- * @param allowConsuming Specifies if the InputGatherer can consume input and prevent it from being passed further, or not.
+ * @param kAllowConsuming Specifies if the InputGatherer can consume input and prevent it from being passed further, or not.
  */
 ol::InputGathererKeyboard::InputGathererKeyboard(const bool allowConsuming)
 {
@@ -35,6 +35,10 @@ void ol::InputGathererKeyboard::m_fInit()
 
 void ol::InputGathererKeyboard::m_fTerminate()
 {
+    if (this->m_bCalledTerminate) { return; }
+    this->m_bCalledTerminate = true;
+
+    // Instead of calling off to PostThreadMessage etc., use callback from jthread.
     if (this->m_bAllowConsuming)
     {
         ::PostThreadMessageW(GetThreadId(this->m_thInputGatherThread.native_handle()), WM_QUIT, reinterpret_cast<WPARAM>(nullptr), reinterpret_cast<LPARAM>(nullptr));
@@ -45,13 +49,11 @@ void ol::InputGathererKeyboard::m_fTerminate()
         ::PostMessageW(this->m_hRawInputMessageWindow, WM_QUIT, reinterpret_cast<WPARAM>(nullptr), reinterpret_cast<LPARAM>(nullptr));
         this->m_fEndRawInput();
     }
-
-    if (this->m_thInputGatherThread.joinable()) { this->m_thInputGatherThread.join(); }
 }
 
 ol::InputGathererKeyboard::~InputGathererKeyboard()
 {
-    this->m_fTerminate();
+    if (!this->m_bCalledTerminate) { this->m_fTerminate(); }
     Instance = nullptr;
 }
 
@@ -64,8 +66,11 @@ void ol::InputGathererKeyboard::m_fStartHook()
 {
     // Don't return until the hook has been set up.
     std::binary_semaphore threadInitialised{0};
-    this->m_thInputGatherThread = std::thread([&]
+    this->m_thInputGatherThread = std::jthread{[&](const std::stop_token& kStopToken)
     {
+        // TODO: Potentially call Shutdown here?
+        std::stop_callback stopCallback{kStopToken, [&]{ }};
+
         // This thread does GetMessage and sends the input received to the queue.
         // PeekMessage and SetWindowsHookEx needs to be called in the same thread that will call off to GetMessage
         // Let's try doing this without the timer initially and see if we are timing out at all.
@@ -79,7 +84,7 @@ void ol::InputGathererKeyboard::m_fStartHook()
         threadInitialised.release();
 
         while (this->m_bRunning) { this->m_fWaitForLowLevelHook(); }
-    });
+    }};
 
     threadInitialised.acquire();
 }
@@ -201,8 +206,11 @@ void ol::InputGathererKeyboard::m_fStartRawInput()
     std::binary_semaphore rawInputInitialised{0};
     // Note to self:
     // We need to create the window on the same thread that we call GetMessage from.
-    this->m_thInputGatherThread = std::thread([&]
+    this->m_thInputGatherThread = std::jthread([&](const std::stop_token& kStopToken)
     {
+        // TODO: Potentially call Shutdown here?
+        std::stop_callback stopCallback{kStopToken, [&]{ }};
+
         this->m_wRawInputWindowClass.hInstance = nullptr;
         this->m_wRawInputWindowClass.lpszClassName = L"OneControl - Keyboard Procedure";
         this->m_wRawInputWindowClass.lpfnWndProc = ol::InputGathererKeyboard::RawInputProcedure;
@@ -370,6 +378,16 @@ void ol::InputGathererKeyboard::Toggle()
 {
     this->m_bGathering = !this->m_bGathering;
     this->m_bConsuming = this->m_bGathering.operator bool();
+}
+
+void ol::InputGathererKeyboard::Shutdown()
+{
+    this->m_fTerminate();
+}
+
+uint64_t ol::InputGathererKeyboard::AvailableInputs()
+{
+    return this->m_bufInputs.Length();
 }
 
 #endif

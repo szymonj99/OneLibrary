@@ -11,18 +11,11 @@ namespace ol
     {
     private:
 #ifdef OS_WINDOWS
-        std::thread m_thInputGatherThread;
+        std::jthread m_thInputGatherThread;
         HHOOK m_pHook = nullptr;
 
         WNDCLASS m_wRawInputWindowClass{};
         HWND m_hRawInputMessageWindow{};
-
-        // To avoid potential issues with calling virtual functions in the destructor, e can instead
-        // call these functions which will only be defined in the current derived class and not in the base class.
-        // These are currently only called on Windows.
-        // Do _NOT_ call these by yourself.
-        void m_fInit();
-        void m_fTerminate();
 
         void m_fStartHook();
         void m_fWaitForLowLevelHook();
@@ -38,9 +31,10 @@ namespace ol
         static LRESULT CALLBACK RawInputProcedure(const HWND hWnd, const UINT message, const WPARAM wParam, const LPARAM lParam);
 #elif OS_LINUX
         void m_fDeviceHandler(libevdev* device) override;
-        // TODO: Figure out if we want to include this in the base class :thinking:
-        static void m_fSignalHandler(const int32_t signal);
+        static void m_fSignalHandler(const int32_t kSignal);
 #endif
+        void m_fInit();
+        void m_fTerminate();
 
     public:
         /**
@@ -49,7 +43,9 @@ namespace ol
          */
         explicit InputGathererMouse(const bool kAllowConsuming = true);
         ~InputGathererMouse();
-        ol::Input GatherInput() override;
+        [[nodiscard]] ol::Input GatherInput() override;
         void Toggle() override;
+        void Shutdown() override;
+        [[nodiscard]] uint64_t AvailableInputs() override;
     };
 }

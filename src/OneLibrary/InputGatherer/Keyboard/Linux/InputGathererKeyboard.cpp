@@ -4,7 +4,7 @@
 
 namespace fs = std::filesystem;
 
-namespace ol
+namespace
 {
     // Not quite a singleton pattern, but almost.
     ol::InputGathererKeyboard* Instance = nullptr;
@@ -17,10 +17,15 @@ ol::InputGathererKeyboard::InputGathererKeyboard(const bool kAllowConsuming)
     assert(!Instance);
     Instance = this;
     this->m_bAllowConsuming = kAllowConsuming;
+    this->m_fInit();
+}
 
+void ol::InputGathererKeyboard::m_fInit()
+{
     // We add a signal handler so that libevdev_next_event can exit early if the threads are interrupted.
     // Note: Using std::signal does not work here.
     // Using std::signal does not make `libevdev_next_event` return -EINTR, ever.
+    // NOTE: This is a little incorrect, but the current implementation works. Let's leave it.
     struct sigaction sa{};
     sa.sa_handler = ol::InputGathererKeyboard::m_fSignalHandler;
     sigemptyset(&sa.sa_mask);
@@ -31,15 +36,15 @@ ol::InputGathererKeyboard::InputGathererKeyboard(const bool kAllowConsuming)
 
     for (const auto& entry : fs::directory_iterator(devicePath))
     {
-    	// device files are symlinks
-    	if (entry.is_symlink() && entry.path().filename().string().ends_with("-event-kbd"))
-    	{
-    		// TODO: Add error handling.
+        // device files are symlinks
+        if (entry.is_symlink() && entry.path().filename().string().ends_with("-event-kbd"))
+        {
+            // TODO: Add error handling.
 
-    		const auto kPath = fs::canonical(entry.path()).string();
+            const auto kPath = fs::canonical(entry.path()).string();
 
             this->m_vDeviceFiles.emplace_back(::open(kPath.c_str(), O_RDONLY));
-    		libevdev* input{};
+            libevdev* input{};
 
             const auto kReturnCode = ::libevdev_new_from_fd(this->m_vDeviceFiles.back(), &input);
             if (kReturnCode != 0) // Error
@@ -49,7 +54,7 @@ ol::InputGathererKeyboard::InputGathererKeyboard(const bool kAllowConsuming)
                 return;
             }
 
-    		// When we grab the input, the events are not passed to any other window.
+            // When we grab the input, the events are not passed to any other window.
             if (this->m_bAllowConsuming)
             {
                 // TODO: Add error handling
@@ -59,11 +64,11 @@ ol::InputGathererKeyboard::InputGathererKeyboard(const bool kAllowConsuming)
             this->m_vVirtualDevices.push_back(input);
 
             // We do not call `libevdev_set_fd_nonblock` as the reading of these input events will be done on a separate thread.
-    		// Therefore, we do actually want to block until an input is available.
-    		// Doing so will allow us to not have to be busy-waiting.
+            // Therefore, we do actually want to block until an input is available.
+            // Doing so will allow us to not have to be busy-waiting.
 
-    		this->m_vDeviceHandlers.emplace_back([&](libevdev* device){ this->m_fDeviceHandler(device); }, this->m_vVirtualDevices.back());
-    	}
+            this->m_vDeviceHandlers.emplace_back([&](libevdev* device){ this->m_fDeviceHandler(device); }, this->m_vVirtualDevices.back());
+        }
     }
 
 #ifdef ONELIBRARY_TESTS
@@ -112,7 +117,7 @@ ol::InputGathererKeyboard::InputGathererKeyboard(const bool kAllowConsuming)
 #endif
 }
 
-void ol::InputGathererKeyboard::m_fSignalHandler(const int32_t signal)
+void ol::InputGathererKeyboard::m_fSignalHandler(const int32_t kSignal)
 {
     // This only ever receives SIGINT == 2 as that is the only registered signal.
     Instance->m_bRunning = false;
@@ -120,7 +125,6 @@ void ol::InputGathererKeyboard::m_fSignalHandler(const int32_t signal)
 
 void ol::InputGathererKeyboard::m_fDeviceHandler(libevdev* device)
 {
-    // TODO: Add killswitch.
     // TODO: Add support for hotplugging devices.
 
 	while (this->m_bRunning)
@@ -205,8 +209,21 @@ void ol::InputGathererKeyboard::m_fDeviceHandler(libevdev* device)
 	}
 }
 
+void ol::InputGathererKeyboard::Shutdown()
+{
+    this->m_fTerminate();
+}
+
 ol::InputGathererKeyboard::~InputGathererKeyboard()
 {
+    this->Shutdown();
+}
+
+void ol::InputGathererKeyboard::m_fTerminate()
+{
+    if (this->m_bCalledTerminate) { return; }
+    this->m_bCalledTerminate = true;
+
     for (auto& th: this->m_vDeviceHandlers)
     {
         ::pthread_kill(th.native_handle(), SIGINT);
@@ -251,6 +268,11 @@ void ol::InputGathererKeyboard::Toggle()
 
     this->m_bGathering = !this->m_bGathering;
     this->m_bConsuming = this->m_bGathering.operator bool();
+}
+
+uint64_t ol::InputGathererKeyboard::AvailableInputs()
+{
+    return this->m_bufInputs.Length();
 }
 
 #endif

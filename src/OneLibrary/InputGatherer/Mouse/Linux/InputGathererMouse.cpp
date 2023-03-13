@@ -12,12 +12,8 @@ namespace
     std::counting_semaphore<20> semShuttingDown{0};
 }
 
-ol::InputGathererMouse::InputGathererMouse(const bool kAllowConsuming)
+void ol::InputGathererMouse::m_fInit()
 {
-    assert(!Instance);
-    Instance = this;
-	this->m_bAllowConsuming = kAllowConsuming;
-
     // We add a signal handler so that libevdev_next_event can exit early if the threads are interrupted.
     struct sigaction sa{};
     sa.sa_handler = ol::InputGathererMouse::m_fSignalHandler;
@@ -25,24 +21,24 @@ ol::InputGathererMouse::InputGathererMouse(const bool kAllowConsuming)
     sa.sa_flags = 0;
     sigaction(SIGINT, &sa, nullptr);
 
-	// Iterate over files in `/dev/input/by-path`.
-	// It is better to interact with the event files rather than `mouseX` files as they provide more information, and are not reliant on X server.
-	// Files ending in `-event-kbd` are keyboard event files.
-	// Files ending in `-event-mouse` are mouse event files.
+    // Iterate over files in `/dev/input/by-path`.
+    // It is better to interact with the event files rather than `mouseX` files as they provide more information, and are not reliant on X server.
+    // Files ending in `-event-kbd` are keyboard event files.
+    // Files ending in `-event-mouse` are mouse event files.
 
-	fs::path devicePath("/dev/input/by-path");
+    fs::path devicePath("/dev/input/by-path");
 
-	for (const auto& entry : fs::directory_iterator(devicePath))
-	{
-		// device files are symlinks
-		if (entry.is_symlink() && entry.path().filename().string().ends_with("-event-mouse"))
-		{
-			// TODO: Add error handling.
+    for (const auto& entry : fs::directory_iterator(devicePath))
+    {
+        // device files are symlinks
+        if (entry.is_symlink() && entry.path().filename().string().ends_with("-event-mouse"))
+        {
+            // TODO: Add error handling.
 
-			const auto kPath = fs::canonical(entry.path()).string();
+            const auto kPath = fs::canonical(entry.path()).string();
 
-			this->m_vDeviceFiles.emplace_back(::open(kPath.c_str(), O_RDONLY));
-			libevdev* input{};
+            this->m_vDeviceFiles.emplace_back(::open(kPath.c_str(), O_RDONLY));
+            libevdev* input{};
             const auto kReturnCode = ::libevdev_new_from_fd(this->m_vDeviceFiles.back(), &input);
             if (kReturnCode != 0) // Error
             {
@@ -51,21 +47,21 @@ ol::InputGathererMouse::InputGathererMouse(const bool kAllowConsuming)
                 return;
             }
 
-			// When we grab the input, the events are not passed to any other window.
-			if (this->m_bAllowConsuming)
-			{
-				::libevdev_grab(input, LIBEVDEV_GRAB);
-			}
+            // When we grab the input, the events are not passed to any other window.
+            if (this->m_bAllowConsuming)
+            {
+                ::libevdev_grab(input, LIBEVDEV_GRAB);
+            }
 
-			this->m_vVirtualDevices.push_back(input);
+            this->m_vVirtualDevices.push_back(input);
 
-			// We do not call `libevdev_set_fd_nonblock` as the reading of these input events will be done on a separate thread.
-			// Therefore, we do actually want to block until an input is available.
-			// Doing so will allow us to not have to be busy-waiting.
+            // We do not call `libevdev_set_fd_nonblock` as the reading of these input events will be done on a separate thread.
+            // Therefore, we do actually want to block until an input is available.
+            // Doing so will allow us to not have to be busy-waiting.
 
-			this->m_vDeviceHandlers.emplace_back([&](libevdev* device){ this->m_fDeviceHandler(device); }, this->m_vVirtualDevices.back());
-		}
-	}
+            this->m_vDeviceHandlers.emplace_back([&](libevdev* device){ this->m_fDeviceHandler(device); }, this->m_vVirtualDevices.back());
+        }
+    }
 
 #ifdef ONELIBRARY_TESTS
 // Let's naively assume that this is being called right after the input simulator has been called.
@@ -111,6 +107,48 @@ ol::InputGathererMouse::InputGathererMouse(const bool kAllowConsuming)
     this->m_vVirtualDevices.push_back(simulatedInput);
     this->m_vDeviceHandlers.emplace_back([&](libevdev* device){ this->m_fDeviceHandler(device); }, this->m_vVirtualDevices.back());
 #endif
+}
+
+void ol::InputGathererMouse::m_fTerminate()
+{
+    if (this->m_bCalledTerminate) { return; }
+    this->m_bCalledTerminate = true;
+
+    for (auto& th: this->m_vDeviceHandlers)
+    {
+        ::pthread_kill(th.native_handle(), SIGINT);
+    }
+
+    // Wait for each thread to finish being interrupted so that we do not free any libevdev devices whilst they're still in use.
+    for (size_t i = 0; i < this->m_vDeviceHandlers.size(); i++)
+    {
+        semShuttingDown.acquire();
+    }
+
+    for (auto& virtualDevice : this->m_vVirtualDevices)
+    {
+        ::libevdev_free(virtualDevice);
+    }
+
+    for (auto& fileDescriptor : this->m_vDeviceFiles)
+    {
+        ::close(fileDescriptor);
+    }
+
+    for (auto& th : this->m_vDeviceHandlers)
+    {
+        th.join();
+    }
+
+    Instance = nullptr;
+}
+
+ol::InputGathererMouse::InputGathererMouse(const bool kAllowConsuming)
+{
+    assert(!Instance);
+    Instance = this;
+    this->m_bAllowConsuming = kAllowConsuming;
+    this->m_fInit();
 }
 
 void ol::InputGathererMouse::m_fDeviceHandler(libevdev *device)
@@ -356,40 +394,19 @@ void ol::InputGathererMouse::m_fDeviceHandler(libevdev *device)
 	}
 }
 
-void ol::InputGathererMouse::m_fSignalHandler(const int32_t signal)
+void ol::InputGathererMouse::m_fSignalHandler(const int32_t kSignal)
 {
     Instance->m_bRunning = false;
 }
 
+void ol::InputGathererMouse::Shutdown()
+{
+    this->m_fTerminate();
+}
+
 ol::InputGathererMouse::~InputGathererMouse()
 {
-    for (auto& th: this->m_vDeviceHandlers)
-    {
-        ::pthread_kill(th.native_handle(), SIGINT);
-    }
-
-    // Wait for each thread to finish being interrupted so that we do not free any libevdev devices whilst they're still in use.
-    for (size_t i = 0; i < this->m_vDeviceHandlers.size(); i++)
-    {
-        semShuttingDown.acquire();
-    }
-
-	for (auto& virtualDevice : this->m_vVirtualDevices)
-	{
-		::libevdev_free(virtualDevice);
-	}
-
-    for (auto& fileDescriptor : this->m_vDeviceFiles)
-    {
-        ::close(fileDescriptor);
-    }
-
-    for (auto& th : this->m_vDeviceHandlers)
-    {
-        th.join();
-    }
-
-    Instance = nullptr;
+    this->Shutdown();
 }
 
 ol::Input ol::InputGathererMouse::GatherInput()
@@ -406,6 +423,11 @@ void ol::InputGathererMouse::Toggle()
 
     this->m_bGathering = !this->m_bGathering;
     this->m_bConsuming = this->m_bGathering.operator bool();
+}
+
+uint64_t ol::InputGathererMouse::AvailableInputs()
+{
+    return this->m_bufInputs.Length();
 }
 
 #endif
