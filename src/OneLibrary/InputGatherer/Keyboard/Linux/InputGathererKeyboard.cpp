@@ -121,7 +121,7 @@ void ol::InputGathererKeyboard::m_fInit()
 void ol::InputGathererKeyboard::m_fSignalHandler(const int32_t kSignal)
 {
     // This only ever receives SIGINT == 2 as that is the only registered signal.
-    Instance->m_bRunning = false;
+    Instance->Shutdown();
 }
 
 void ol::InputGathererKeyboard::m_fDeviceHandler(libevdev* device)
@@ -208,6 +208,7 @@ void ol::InputGathererKeyboard::m_fDeviceHandler(libevdev* device)
             this->m_bufInputs.Add(input);
         }
 	}
+    semShuttingDown.release();
 }
 
 void ol::InputGathererKeyboard::Shutdown()
@@ -228,33 +229,29 @@ void ol::InputGathererKeyboard::m_fTerminate()
     this->m_bRunning = false;
     this->m_bCalledTerminate = true;
 
-    std::cout << "Shutting down threads" << std::endl;
     for (auto& th: this->m_vDeviceHandlers)
     {
         ::pthread_kill(th.native_handle(), SIGINT);
     }
 
-    std::cout << "Acquiring semaphores" << std::endl;
     // Wait for each thread to finish being interrupted so that we do not free any libevdev devices whilst they're still in use.
     for (size_t i = 0; i < this->m_vDeviceHandlers.size(); i++)
     {
+        // We are here -> We never acquire there. Meaning they are never released.
         semShuttingDown.acquire();
     }
 
-    std::cout << "Freeing devices" << std::endl;
     // Note, calling `libevdev_free` only frees the resources, and does not make `libevdev_next_event` blocking call to exit early.
     for (auto& virtualDevice : this->m_vVirtualDevices)
     {
         ::libevdev_free(virtualDevice);
     }
 
-    std::cout << "Closing file descriptors" << std::endl;
     for (auto& fileDescriptor : this->m_vDeviceFiles)
     {
         ::close(fileDescriptor);
     }
 
-    std::cout << "Joining threads" << std::endl;
     for (auto& th : this->m_vDeviceHandlers)
     {
         th.join();

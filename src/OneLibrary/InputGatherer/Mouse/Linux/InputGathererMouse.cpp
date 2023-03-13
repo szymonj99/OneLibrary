@@ -140,8 +140,6 @@ void ol::InputGathererMouse::m_fTerminate()
     {
         th.join();
     }
-
-    Instance = nullptr;
 }
 
 ol::InputGathererMouse::InputGathererMouse(const bool kAllowConsuming)
@@ -393,11 +391,12 @@ void ol::InputGathererMouse::m_fDeviceHandler(libevdev *device)
             this->m_bufInputs.Add(input);
         }
 	}
+    semShuttingDown.release();
 }
 
 void ol::InputGathererMouse::m_fSignalHandler(const int32_t kSignal)
 {
-    Instance->m_bRunning = false;
+    Instance->Shutdown();
 }
 
 void ol::InputGathererMouse::Shutdown()
