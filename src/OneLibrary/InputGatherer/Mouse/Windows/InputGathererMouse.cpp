@@ -31,6 +31,9 @@ void ol::InputGathererMouse::m_fInit()
 
 void ol::InputGathererMouse::m_fTerminate()
 {
+    if (this->m_bCalledTerminate) { return; }
+    this->m_bCalledTerminate = true;
+
     if (this->m_bAllowConsuming)
     {
         ::PostThreadMessageW(GetThreadId(this->m_thInputGatherThread.native_handle()), WM_QUIT, reinterpret_cast<WPARAM>(nullptr), reinterpret_cast<LPARAM>(nullptr));
@@ -412,6 +415,11 @@ void ol::InputGathererMouse::Toggle()
 {
     this->m_bGathering = !this->m_bGathering;
     this->m_bConsuming = this->m_bGathering.operator bool();
+}
+
+void ol::InputGathererMouse::Shutdown()
+{
+    this->m_fTerminate();
 }
 
 #endif

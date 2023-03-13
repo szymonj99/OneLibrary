@@ -35,6 +35,8 @@ ol::InputGathererClipboard::InputGathererClipboard(const bool kAllowConsuming)
     threadInitialised.acquire();
 }
 
+void ol::InputGathererClipboard::Shutdown() {};
+
 void ol::InputGathererClipboard::m_fWaitForClipboard()
 {
     ::MSG msg{};

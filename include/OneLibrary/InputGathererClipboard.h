@@ -21,5 +21,6 @@ namespace ol
         ~InputGathererClipboard();
         ol::Input GatherInput() override;
         void Toggle() override;
+        void Shutdown() override;
     };
 }

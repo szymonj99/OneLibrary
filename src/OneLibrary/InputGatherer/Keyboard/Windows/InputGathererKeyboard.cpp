@@ -35,6 +35,9 @@ void ol::InputGathererKeyboard::m_fInit()
 
 void ol::InputGathererKeyboard::m_fTerminate()
 {
+    if (this->m_bCalledTerminate) { return; }
+    this->m_bCalledTerminate = true;
+
     if (this->m_bAllowConsuming)
     {
         ::PostThreadMessageW(GetThreadId(this->m_thInputGatherThread.native_handle()), WM_QUIT, reinterpret_cast<WPARAM>(nullptr), reinterpret_cast<LPARAM>(nullptr));
@@ -51,7 +54,7 @@ void ol::InputGathererKeyboard::m_fTerminate()
 
 ol::InputGathererKeyboard::~InputGathererKeyboard()
 {
-    this->m_fTerminate();
+    if (!this->m_bCalledTerminate) { this->m_fTerminate(); }
     Instance = nullptr;
 }
 
@@ -370,6 +373,11 @@ void ol::InputGathererKeyboard::Toggle()
 {
     this->m_bGathering = !this->m_bGathering;
     this->m_bConsuming = this->m_bGathering.operator bool();
+}
+
+void ol::InputGathererKeyboard::Shutdown()
+{
+    this->m_fTerminate();
 }
 
 #endif
