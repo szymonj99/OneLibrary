@@ -8,7 +8,7 @@ namespace ol
     {
     private:
 #ifdef OS_WINDOWS
-        std::thread m_thInputGatherThread;
+        std::jthread m_thInputGatherThread;
         WNDCLASS m_wClipboardWindowClass{};
         HWND m_hClipboardMessageWindow{};
         static LRESULT CALLBACK WndProc(const HWND hWnd, const UINT message, const WPARAM wParam, const LPARAM lParam);

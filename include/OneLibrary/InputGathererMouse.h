@@ -11,7 +11,7 @@ namespace ol
     {
     private:
 #ifdef OS_WINDOWS
-        std::thread m_thInputGatherThread;
+        std::jthread m_thInputGatherThread;
         HHOOK m_pHook = nullptr;
 
         WNDCLASS m_wRawInputWindowClass{};

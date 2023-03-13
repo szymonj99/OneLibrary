@@ -14,7 +14,7 @@ ol::InputGathererClipboard::InputGathererClipboard(const bool kAllowConsuming)
     this->m_bAllowConsuming = kAllowConsuming;
 
     std::binary_semaphore threadInitialised{0};
-    this->m_thInputGatherThread = std::thread([&]
+    this->m_thInputGatherThread = std::jthread([&]
     {
         // Create the window here and register it to receive clipboard messages
         this->m_wClipboardWindowClass.lpfnWndProc = ol::InputGathererClipboard::WndProc;

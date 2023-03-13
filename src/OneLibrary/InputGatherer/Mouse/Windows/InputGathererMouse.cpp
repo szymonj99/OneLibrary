@@ -62,7 +62,7 @@ ol::Input ol::InputGathererMouse::GatherInput()
 void ol::InputGathererMouse::m_fStartHook()
 {
     std::binary_semaphore threadInitialised{0};
-    this->m_thInputGatherThread = std::thread([&]
+    this->m_thInputGatherThread = std::jthread([&]
     {
         // This thread does GetMessage and sends the input received to the queue.
         // PeekMessage and SetWindowsHookEx needs to be called in the same thread that will call off to GetMessage
@@ -227,7 +227,7 @@ void ol::InputGathererMouse::m_fEndHook()
 void ol::InputGathererMouse::m_fStartRawInput()
 {
     std::binary_semaphore rawInputInitialised{0};
-    this->m_thInputGatherThread = std::thread([&]
+    this->m_thInputGatherThread = std::jthread([&]
     {
         this->m_wRawInputWindowClass.hInstance = nullptr;
         this->m_wRawInputWindowClass.lpszClassName = L"OneControl - Mouse Procedure";

@@ -67,7 +67,7 @@ void ol::InputGathererKeyboard::m_fStartHook()
 {
     // Don't return until the hook has been set up.
     std::binary_semaphore threadInitialised{0};
-    this->m_thInputGatherThread = std::thread([&]
+    this->m_thInputGatherThread = std::jthread([&]
     {
         // This thread does GetMessage and sends the input received to the queue.
         // PeekMessage and SetWindowsHookEx needs to be called in the same thread that will call off to GetMessage
@@ -204,7 +204,7 @@ void ol::InputGathererKeyboard::m_fStartRawInput()
     std::binary_semaphore rawInputInitialised{0};
     // Note to self:
     // We need to create the window on the same thread that we call GetMessage from.
-    this->m_thInputGatherThread = std::thread([&]
+    this->m_thInputGatherThread = std::jthread([&]
     {
         this->m_wRawInputWindowClass.hInstance = nullptr;
         this->m_wRawInputWindowClass.lpszClassName = L"OneControl - Keyboard Procedure";

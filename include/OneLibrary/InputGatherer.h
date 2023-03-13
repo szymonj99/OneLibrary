@@ -71,7 +71,7 @@ namespace ol
 
 #ifdef OS_LINUX
         std::vector<libevdev*> m_vVirtualDevices{};
-        std::vector<std::thread> m_vDeviceHandlers{};
+        std::vector<std::jthread> m_vDeviceHandlers{};
         std::vector<int32_t> m_vDeviceFiles{};
 
         virtual void m_fDeviceHandler(libevdev* device) = 0;
