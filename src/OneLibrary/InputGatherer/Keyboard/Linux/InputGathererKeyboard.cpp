@@ -25,6 +25,7 @@ void ol::InputGathererKeyboard::m_fInit()
     // We add a signal handler so that libevdev_next_event can exit early if the threads are interrupted.
     // Note: Using std::signal does not work here.
     // Using std::signal does not make `libevdev_next_event` return -EINTR, ever.
+    // NOTE: This is a little incorrect, but the current implementation works. Let's leave it.
     struct sigaction sa{};
     sa.sa_handler = ol::InputGathererKeyboard::m_fSignalHandler;
     sigemptyset(&sa.sa_mask);
