@@ -1,8 +1,11 @@
 #pragma once
 
 #include <cstdint>
-#include <semaphore>
 #include <queue>
+#include <mutex>
+#include <condition_variable>
+
+#include <OneLibrary/InterruptException.h>
 
 namespace ol
 {
@@ -16,29 +19,32 @@ namespace ol
     {
     private:
         std::queue<T> m_qCollection{};
-        // A semaphore representative of the empty spaces is not necessary, as queue will expand as needed.
-        //std::numeric_limits<uint32_t>::max()
-        std::counting_semaphore<2147483647> m_sItems{0};
-        std::binary_semaphore m_sMutex{1};
-        std::atomic<uint64_t> m_uiLength{0};
+        std::mutex m_mMutex{};
+        std::condition_variable m_cvCondition;
+        std::atomic<bool> m_bInterrupted = false;
 
     public:
         [[nodiscard]] ThreadsafeQueue() noexcept = default;
+        ~ThreadsafeQueue() noexcept
+        {
+            // I think there isn't a point in Interrupting if we interrupted before.
+            if (!this->m_bInterrupted) { this->Interrupt(); }
+        }
+
         /**
          * Blocks until a value can be retrieved from the queue.
+         * If the queue was interrupted whilst waiting for an item, this throws an `ol::InterruptException`.
          * @return A value/item that has been popped from the queue.
          */
-        [[nodiscard]] T Get() noexcept
+        [[nodiscard]] T Get() noexcept(false)
         {
-            // Could I make my own wrapper for this that would throw my own exception when a thread is timed out?
-            this->m_sItems.acquire();
-            this->m_sMutex.acquire();
+            std::unique_lock<std::mutex> lock(this->m_mMutex);
+
+            this->m_cvCondition.wait(lock, [&]{ return !this->m_qCollection.empty() || this->m_bInterrupted; });
+            if (this->m_bInterrupted) { throw ol::InterruptException(); }
 
             const T value = this->m_qCollection.front();
             this->m_qCollection.pop();
-            this->m_uiLength--;
-
-            this->m_sMutex.release();
 
             return value;
         };
@@ -54,18 +60,19 @@ namespace ol
          */
         void Add(const T item) noexcept
         {
-            this->m_sMutex.acquire();
-
+            std::unique_lock<std::mutex> lock(this->m_mMutex);
             this->m_qCollection.push(item);
-            this->m_uiLength++;
-
-            this->m_sItems.release();
-            this->m_sMutex.release();
+            this->m_cvCondition.notify_one();
         };
 
-        [[nodiscard]] [[gnu::pure]] uint64_t Length() noexcept
+        /**
+         * Makes all current (and I think future?) callers of `Get()` to raise an InterruptException. This can signal that the callers need to exit.
+         */
+        void Interrupt() noexcept
         {
-            return this->m_uiLength;
+            std::unique_lock<std::mutex> lock(this->m_mMutex);
+            this->m_bInterrupted = true;
+            this->m_cvCondition.notify_all();
         }
     };
 }

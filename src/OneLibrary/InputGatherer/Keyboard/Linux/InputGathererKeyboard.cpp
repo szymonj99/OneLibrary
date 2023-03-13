@@ -15,6 +15,7 @@ namespace
 ol::InputGathererKeyboard::InputGathererKeyboard(const bool kAllowConsuming)
 {
     assert(!Instance);
+    if (Instance) { throw std::runtime_error{"Only one Keyboard Gatherer can be active at once."}; }
     Instance = this;
     this->m_bAllowConsuming = kAllowConsuming;
     this->m_fInit();
@@ -211,52 +212,53 @@ void ol::InputGathererKeyboard::m_fDeviceHandler(libevdev* device)
 
 void ol::InputGathererKeyboard::Shutdown()
 {
+    this->m_bufInputs.Interrupt();
     this->m_fTerminate();
 }
 
 ol::InputGathererKeyboard::~InputGathererKeyboard()
 {
     this->Shutdown();
+    Instance = nullptr;
 }
 
 void ol::InputGathererKeyboard::m_fTerminate()
 {
     if (this->m_bCalledTerminate) { return; }
+    this->m_bRunning = false;
     this->m_bCalledTerminate = true;
 
+    std::cout << "Shutting down threads" << std::endl;
     for (auto& th: this->m_vDeviceHandlers)
     {
         ::pthread_kill(th.native_handle(), SIGINT);
     }
 
+    std::cout << "Acquiring semaphores" << std::endl;
     // Wait for each thread to finish being interrupted so that we do not free any libevdev devices whilst they're still in use.
     for (size_t i = 0; i < this->m_vDeviceHandlers.size(); i++)
     {
         semShuttingDown.acquire();
     }
 
+    std::cout << "Freeing devices" << std::endl;
     // Note, calling `libevdev_free` only frees the resources, and does not make `libevdev_next_event` blocking call to exit early.
     for (auto& virtualDevice : this->m_vVirtualDevices)
     {
         ::libevdev_free(virtualDevice);
     }
 
+    std::cout << "Closing file descriptors" << std::endl;
     for (auto& fileDescriptor : this->m_vDeviceFiles)
     {
         ::close(fileDescriptor);
     }
 
+    std::cout << "Joining threads" << std::endl;
     for (auto& th : this->m_vDeviceHandlers)
     {
         th.join();
     }
-
-    Instance = nullptr;
-}
-
-ol::Input ol::InputGathererKeyboard::GatherInput()
-{
-	return this->m_bufInputs.Get();
 }
 
 void ol::InputGathererKeyboard::Toggle()
@@ -268,11 +270,6 @@ void ol::InputGathererKeyboard::Toggle()
 
     this->m_bGathering = !this->m_bGathering;
     this->m_bConsuming = this->m_bGathering.operator bool();
-}
-
-uint64_t ol::InputGathererKeyboard::AvailableInputs()
-{
-    return this->m_bufInputs.Length();
 }
 
 #endif

@@ -10,6 +10,7 @@ namespace
 ol::InputGathererMouse::InputGathererMouse(const bool kAllowConsuming)
 {
     assert(!Instance);
+    if (Instance) { throw std::runtime_error{"Only one Mouse Gatherer can be active at once."}; }
     Instance = this;
     this->m_bAllowConsuming = kAllowConsuming;
     this->m_fInit();
@@ -50,13 +51,9 @@ void ol::InputGathererMouse::m_fTerminate()
 
 ol::InputGathererMouse::~InputGathererMouse()
 {
+    this->m_bufInputs.Interrupt();
     this->m_fTerminate();
     Instance = nullptr;
-}
-
-ol::Input ol::InputGathererMouse::GatherInput()
-{
-    return this->m_bufInputs.Get();
 }
 
 void ol::InputGathererMouse::m_fStartHook()
@@ -420,11 +417,7 @@ void ol::InputGathererMouse::Toggle()
 void ol::InputGathererMouse::Shutdown()
 {
     this->m_fTerminate();
-}
-
-uint64_t ol::InputGathererMouse::AvailableInputs()
-{
-    return this->m_bufInputs.Length();
+    this->m_bufInputs.Interrupt();
 }
 
 #endif

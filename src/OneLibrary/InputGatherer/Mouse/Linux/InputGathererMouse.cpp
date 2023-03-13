@@ -112,6 +112,7 @@ void ol::InputGathererMouse::m_fInit()
 void ol::InputGathererMouse::m_fTerminate()
 {
     if (this->m_bCalledTerminate) { return; }
+    this->m_bRunning = false;
     this->m_bCalledTerminate = true;
 
     for (auto& th: this->m_vDeviceHandlers)
@@ -146,6 +147,7 @@ void ol::InputGathererMouse::m_fTerminate()
 ol::InputGathererMouse::InputGathererMouse(const bool kAllowConsuming)
 {
     assert(!Instance);
+    if (Instance) { throw std::runtime_error{"Only one Mouse Gatherer can be active at once."}; }
     Instance = this;
     this->m_bAllowConsuming = kAllowConsuming;
     this->m_fInit();
@@ -153,7 +155,6 @@ ol::InputGathererMouse::InputGathererMouse(const bool kAllowConsuming)
 
 void ol::InputGathererMouse::m_fDeviceHandler(libevdev *device)
 {
-    // TODO: Add killswitch.
     // TODO: Add support for hotplugging devices.
 
     bool setNextRelativeX = true, setNextRelativeY = true;
@@ -401,17 +402,14 @@ void ol::InputGathererMouse::m_fSignalHandler(const int32_t kSignal)
 
 void ol::InputGathererMouse::Shutdown()
 {
+    this->m_bufInputs.Interrupt();
     this->m_fTerminate();
 }
 
 ol::InputGathererMouse::~InputGathererMouse()
 {
     this->Shutdown();
-}
-
-ol::Input ol::InputGathererMouse::GatherInput()
-{
-	return this->m_bufInputs.Get();
+    Instance = nullptr;
 }
 
 void ol::InputGathererMouse::Toggle()
@@ -423,11 +421,6 @@ void ol::InputGathererMouse::Toggle()
 
     this->m_bGathering = !this->m_bGathering;
     this->m_bConsuming = this->m_bGathering.operator bool();
-}
-
-uint64_t ol::InputGathererMouse::AvailableInputs()
-{
-    return this->m_bufInputs.Length();
 }
 
 #endif

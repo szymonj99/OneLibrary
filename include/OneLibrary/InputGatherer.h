@@ -24,6 +24,7 @@
 #include <cstdint>
 #include <thread>
 #include <cassert>
+#include <semaphore>
 
 #include <OneLibrary/Constants.h>
 #include <OneLibrary/Enums.h>
@@ -82,9 +83,11 @@ namespace ol
          * Block until this object gathered some input from the user.
          * @return The input representative of the event that has happened.
          */
-        [[nodiscard]] virtual ol::Input GatherInput() = 0;
+        [[nodiscard]] ol::Input GatherInput() noexcept(false)
+        {
+            return this->m_bufInputs.Get();
+        }
         virtual void Toggle() = 0;
         virtual void Shutdown() = 0;
-        [[nodiscard]] virtual uint64_t AvailableInputs() = 0;
     };
 }

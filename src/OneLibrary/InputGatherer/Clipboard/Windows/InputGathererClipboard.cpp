@@ -148,14 +148,4 @@ void ol::InputGathererClipboard::Toggle()
     this->m_bConsuming = this->m_bGathering.operator bool();
 }
 
-ol::Input ol::InputGathererClipboard::GatherInput()
-{
-    return this->m_bufInputs.Get();
-}
-
-uint64_t ol::InputGathererClipboard::AvailableInputs()
-{
-    return this->m_bufInputs.Length();
-}
-
 #endif
