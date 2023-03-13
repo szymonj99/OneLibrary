@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.19 FATAL_ERROR)
 
 set(LIBRARY_NAME OneLibrary)
-set(LIBRARY_VERSION 0.0.3)
+set(LIBRARY_VERSION 0.0.4)
 
 option(ONELIBRARY_BUILD_TESTS "Build the tests" TRUE)
 option(ONELIBRARY_USE_BACKWARDCPP "Compile OneLibrary including Backward-CPP (only active in `Debug` mode)" TRUE)
