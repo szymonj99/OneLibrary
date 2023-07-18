@@ -1,0 +1,7 @@
+# Building
+
+## Linux
+
+## Windows
+
+### Scoop

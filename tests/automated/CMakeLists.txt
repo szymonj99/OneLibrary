@@ -16,7 +16,7 @@ set_target_properties(${TESTS_AUTOMATED_NAME} PROPERTIES USE_FOLDERS TRUE)
 
 if(CMAKE_HOST_WIN32)
     target_compile_definitions(${TESTS_AUTOMATED_NAME} PRIVATE OS_WINDOWS=1 WINVER=0x0A00 _WIN32_WINNT=0x0A00 _UNICODE=1 UNICODE=1 WIN32_LEAN_AND_MEAN=1 NOMINMAX=1)
-    target_compile_options(${TESTS_AUTOMATED_NAME} PRIVATE "/MP")
+    #target_compile_options(${TESTS_AUTOMATED_NAME} PRIVATE "/MP")
 elseif(CMAKE_HOST_APPLE)
     target_compile_definitions(${TESTS_AUTOMATED_NAME} PRIVATE OS_APPLE=1 _UNICODE=1 UNICODE=1)
     target_compile_options(${TESTS_AUTOMATED_NAME} PRIVATE "-Wfatal-errors")

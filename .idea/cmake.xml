@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakeSharedSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Windows-Clang-Release" ENABLED="true" CONFIG_NAME="Release" TOOLCHAIN_NAME="Clang (MinGW)" GENERATION_OPTIONS="-G &quot;Unix Makefiles&quot;" />
+      <configuration PROFILE_NAME="Windows-Clang-Debug" ENABLED="true" CONFIG_NAME="Debug" TOOLCHAIN_NAME="Clang (MinGW)" GENERATION_OPTIONS="-G &quot;Unix Makefiles&quot;" />
+      <configuration PROFILE_NAME="Windows-MSVC-Release" ENABLED="true" CONFIG_NAME="Release" TOOLCHAIN_NAME="MSVC - x64" GENERATION_OPTIONS="-G &quot;Visual Studio 17 2022&quot;" />
+      <configuration PROFILE_NAME="Windows-MSVC-Debug" ENABLED="true" CONFIG_NAME="Debug" TOOLCHAIN_NAME="MSVC - x64" GENERATION_OPTIONS="-G &quot;Visual Studio 17 2022&quot;" />
+      <configuration PROFILE_NAME="Windows-GCC-Release" ENABLED="true" CONFIG_NAME="Release" TOOLCHAIN_NAME="GCC (MinGW)" GENERATION_OPTIONS="-G &quot;MinGW Makefiles&quot;" />
+      <configuration PROFILE_NAME="Windows-GCC-Debug" ENABLED="true" CONFIG_NAME="Debug" TOOLCHAIN_NAME="GCC (MinGW)" GENERATION_OPTIONS="-G &quot;MinGW Makefiles&quot;" />
+    </configurations>
+  </component>
+</project>

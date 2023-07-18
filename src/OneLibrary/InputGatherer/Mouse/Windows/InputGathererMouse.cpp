@@ -37,7 +37,7 @@ void ol::InputGathererMouse::m_fTerminate()
 
     if (this->m_bAllowConsuming)
     {
-        ::PostThreadMessageW(GetThreadId(this->m_thInputGatherThread.native_handle()), WM_QUIT, reinterpret_cast<WPARAM>(nullptr), reinterpret_cast<LPARAM>(nullptr));
+        ::PostThreadMessageW(GetThreadId((HANDLE)this->m_thInputGatherThread.native_handle()), WM_QUIT, reinterpret_cast<WPARAM>(nullptr), reinterpret_cast<LPARAM>(nullptr));
         this->m_fEndHook();
     }
     else
@@ -298,7 +298,7 @@ LRESULT CALLBACK ol::InputGathererMouse::RawInputProcedure(const HWND hWnd, cons
         {
             UINT dwSize = 0;
             ::GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, nullptr, &dwSize, sizeof(RAWINPUTHEADER));
-            const auto lpb = std::make_shared<BYTE[]>(dwSize);
+            const auto lpb = std::make_shared<BYTE>(dwSize);
             if (!lpb || (::GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, lpb.get(), &dwSize,
                                          sizeof(RAWINPUTHEADER)) != dwSize)) {
                 std::cerr << "Raw Input Data size is not correct (mouse)" << std::endl;
