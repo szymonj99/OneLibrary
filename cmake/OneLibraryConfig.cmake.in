@@ -1,0 +1,10 @@
+// Taken from: https://github.com/catchorg/Catch2/blob/devel/CMake/Catch2Config.cmake.in
+@PACKAGE_INIT@
+
+# Avoid repeatedly including the targets
+if(NOT TARGET OneLibrary::OneLibrary)
+    # Provide path for scripts
+    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}")
+
+    include(${CMAKE_CURRENT_LIST_DIR}/OneLibraryTargets.cmake)
+endif()

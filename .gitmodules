@@ -1,6 +1,6 @@
-[submodule "vcpkg"]
-	path = vcpkg
+[submodule "extern/vcpkg"]
+	path = extern/vcpkg
 	url = https://github.com/microsoft/vcpkg.git
-[submodule "deps/backward-cpp"]
-	path = deps/backward-cpp
+[submodule "extern/backward-cpp"]
+	path = extern/backward-cpp
 	url = https://github.com/bombela/backward-cpp.git

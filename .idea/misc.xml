@@ -3,8 +3,17 @@
   <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$" />
   <component name="CidrRootsConfiguration">
     <excludeRoots>
+      <file path="$PROJECT_DIR$/.github" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-clang-debug" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-clang-release" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-gcc-debug" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-gcc-release" />
       <file path="$PROJECT_DIR$/cmake-build-windows-mingw-debug" />
       <file path="$PROJECT_DIR$/cmake-build-windows-mingw-release" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-msvc-debug" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-msvc-release" />
+      <file path="$PROJECT_DIR$/docs" />
+      <file path="$PROJECT_DIR$/extern" />
     </excludeRoots>
   </component>
 </project>

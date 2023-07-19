@@ -2,12 +2,18 @@
 <project version="4">
   <component name="CMakeSharedSettings">
     <configurations>
-      <configuration PROFILE_NAME="Windows-Clang-Release" ENABLED="true" CONFIG_NAME="Release" TOOLCHAIN_NAME="Clang (MinGW)" GENERATION_OPTIONS="-G &quot;Unix Makefiles&quot;" />
-      <configuration PROFILE_NAME="Windows-Clang-Debug" ENABLED="true" CONFIG_NAME="Debug" TOOLCHAIN_NAME="Clang (MinGW)" GENERATION_OPTIONS="-G &quot;Unix Makefiles&quot;" />
-      <configuration PROFILE_NAME="Windows-MSVC-Release" ENABLED="true" CONFIG_NAME="Release" TOOLCHAIN_NAME="MSVC - x64" GENERATION_OPTIONS="-G &quot;Visual Studio 17 2022&quot;" />
-      <configuration PROFILE_NAME="Windows-MSVC-Debug" ENABLED="true" CONFIG_NAME="Debug" TOOLCHAIN_NAME="MSVC - x64" GENERATION_OPTIONS="-G &quot;Visual Studio 17 2022&quot;" />
-      <configuration PROFILE_NAME="Windows-GCC-Release" ENABLED="true" CONFIG_NAME="Release" TOOLCHAIN_NAME="GCC (MinGW)" GENERATION_OPTIONS="-G &quot;MinGW Makefiles&quot;" />
-      <configuration PROFILE_NAME="Windows-GCC-Debug" ENABLED="true" CONFIG_NAME="Debug" TOOLCHAIN_NAME="GCC (MinGW)" GENERATION_OPTIONS="-G &quot;MinGW Makefiles&quot;" />
+      <configuration PROFILE_NAME="Windows-Clang-Release-Shared" ENABLED="false" CONFIG_NAME="Release" TOOLCHAIN_NAME="Clang (MinGW)" GENERATION_OPTIONS="-G &quot;Unix Makefiles&quot; -D BUILD_SHARED_LIBS=TRUE" />
+      <configuration PROFILE_NAME="Windows-Clang-Release-Static" ENABLED="false" CONFIG_NAME="Release" TOOLCHAIN_NAME="Clang (MinGW)" GENERATION_OPTIONS="-G &quot;Unix Makefiles&quot; -D BUILD_SHARED_LIBS=FALSE" />
+      <configuration PROFILE_NAME="Windows-Clang-Debug-Shared" ENABLED="false" CONFIG_NAME="Debug" TOOLCHAIN_NAME="Clang (MinGW)" GENERATION_OPTIONS="-G &quot;Unix Makefiles&quot; -D BUILD_SHARED_LIBS=TRUE" />
+      <configuration PROFILE_NAME="Windows-Clang-Debug-Static" ENABLED="false" CONFIG_NAME="Debug" TOOLCHAIN_NAME="Clang (MinGW)" GENERATION_OPTIONS="-G &quot;Unix Makefiles&quot; -D BUILD_SHARED_LIBS=FALSE" />
+      <configuration PROFILE_NAME="Windows-MSVC-Release-Shared" ENABLED="false" CONFIG_NAME="Release" TOOLCHAIN_NAME="MSVC - x64" GENERATION_OPTIONS="-G &quot;Visual Studio 17 2022&quot; -D BUILD_SHARED_LIBS=TRUE" />
+      <configuration PROFILE_NAME="Windows-MSVC-Release-Static" ENABLED="false" CONFIG_NAME="Release" TOOLCHAIN_NAME="MSVC - x64" GENERATION_OPTIONS="-G &quot;Visual Studio 17 2022&quot; -D BUILD_SHARED_LIBS=FALSE" />
+      <configuration PROFILE_NAME="Windows-MSVC-Debug-Shared" ENABLED="false" CONFIG_NAME="Debug" TOOLCHAIN_NAME="MSVC - x64" GENERATION_OPTIONS="-G &quot;Visual Studio 17 2022&quot; -D BUILD_SHARED_LIBS=TRUE" />
+      <configuration PROFILE_NAME="Windows-MSVC-Debug-Static" ENABLED="true" CONFIG_NAME="Debug" TOOLCHAIN_NAME="MSVC - x64" GENERATION_OPTIONS="-G &quot;Visual Studio 17 2022&quot; -D BUILD_SHARED_LIBS=FALSE -DCMAKE_TOOLCHAIN_FILE=G:\Programming\OneLibrary\extern\vcpkg\scripts\buildsystems\vcpkg.cmake" />
+      <configuration PROFILE_NAME="Windows-GCC-Release-Shared" ENABLED="false" CONFIG_NAME="Release" TOOLCHAIN_NAME="GCC (MinGW)" GENERATION_OPTIONS="-G &quot;MinGW Makefiles&quot; -D BUILD_SHARED_LIBS=TRUE" />
+      <configuration PROFILE_NAME="Windows-GCC-Release-Static" ENABLED="false" CONFIG_NAME="Release" TOOLCHAIN_NAME="GCC (MinGW)" GENERATION_OPTIONS="-G &quot;MinGW Makefiles&quot; -D BUILD_SHARED_LIBS=FALSE" />
+      <configuration PROFILE_NAME="Windows-GCC-Debug-Shared" ENABLED="false" CONFIG_NAME="Debug" TOOLCHAIN_NAME="GCC (MinGW)" GENERATION_OPTIONS="-G &quot;MinGW Makefiles&quot; -D BUILD_SHARED_LIBS=TRUE" />
+      <configuration PROFILE_NAME="Windows-GCC-Debug-Static" ENABLED="false" CONFIG_NAME="Debug" TOOLCHAIN_NAME="GCC (MinGW)" GENERATION_OPTIONS="-G &quot;MinGW Makefiles&quot; -D BUILD_SHARED_LIBS=FALSE" />
     </configurations>
   </component>
 </project>

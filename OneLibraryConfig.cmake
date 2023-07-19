@@ -1,28 +1,34 @@
-# Check if the library is already configured
-if(NOT TARGET ${LIBRARY_NAME})
+// Taken from: https://github.com/catchorg/Catch2/blob/devel/CMake/Catch2Config.cmake.in
 
-    # Create an imported target for the library
-    add_library(${LIBRARY_NAME} INTERFACE)
+####### Expanded from @PACKAGE_INIT@ by configure_package_config_file() #######
+####### Any changes to this file will be overwritten by the next CMake run ####
+####### The input file was OneLibraryConfig.cmake.in                            ########
 
-    # Set properties for the library
-    target_include_directories(${LIBRARY_NAME} INTERFACE
-        "$<BUILD_INTERFACE:${OneLibrary_INCLUDE_DIRS}>"
-        "$<INSTALL_INTERFACE:include>"
-    )
+get_filename_component(PACKAGE_PREFIX_DIR "${CMAKE_CURRENT_LIST_DIR}/../../" ABSOLUTE)
 
-    target_link_libraries(${LIBRARY_NAME} INTERFACE
-        ${OneLibrary_LIBRARIES}
-    )
+macro(set_and_check _var _file)
+  set(${_var} "${_file}")
+  if(NOT EXISTS "${_file}")
+    message(FATAL_ERROR "File or directory ${_file} referenced by variable ${_var} does not exist !")
+  endif()
+endmacro()
 
-    # Add dependencies, if any
-    foreach(dep ${OneLibrary_DEPENDENCIES})
-        target_link_libraries(${LIBRARY_NAME} INTERFACE ${dep})
-    endforeach()
+macro(check_required_components _NAME)
+  foreach(comp ${${_NAME}_FIND_COMPONENTS})
+    if(NOT ${_NAME}_${comp}_FOUND)
+      if(${_NAME}_FIND_REQUIRED_${comp})
+        set(${_NAME}_FOUND FALSE)
+      endif()
+    endif()
+  endforeach()
+endmacro()
 
+####################################################################################
+
+# Avoid repeatedly including the targets
+if(NOT TARGET OneLibrary::OneLibrary)
+    # Provide path for scripts
+    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}")
+
+    include(${CMAKE_CURRENT_LIST_DIR}/OneLibraryTargets.cmake)
 endif()
-
-# Provide version information
-set_property(TARGET ${LIBRARY_NAME} PROPERTY VERSION ${LIBRARY_VERSION})
-
-# Create an imported target for the library configuration
-add_library(${LIBRARY_NAME}::${LIBRARY_NAME} ALIAS ${LIBRARY_NAME})
