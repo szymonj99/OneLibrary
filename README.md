@@ -1,6 +1,12 @@
 # OneLibrary - Cross-Platform Input Hooking Library
 OneLibrary is a C++ library that allows you to more easily create applications that interact with user input.
 
+# Dependencies
+
+- VCPKG     - Present in `extern/vcpkg` as a Git submodule
+- Catch2    - Downloaded with vcpkg
+- libevdev  - Linux-only, can be downloaded using the system's package manager
+
 # Examples
 See [examples](docs/examples).
 TODO: Add examples here as well as the docs.
@@ -14,15 +20,16 @@ See the [license file](LICENSE) (subject to change)
 
 # Project Structure
 ```
-./inlude - The header files
-./src    - The source files
-./tests  - The test files
+./include   - The header files
+./src       - The source files
+./tests     - The test files
 ```
 
 # Get Started - CMake Build
 ```shell
 git clone https://github.com/szymonj99/OneLibrary
 cd OneLibrary
+git submodule update --init --recursive
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build --config Release
 ```

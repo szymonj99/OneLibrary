@@ -12,6 +12,23 @@
     </libraryRoots>
     <excludeRoots>
       <file path="$PROJECT_DIR$/.github" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-clang-cl-debug-shared" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-clang-cl-debug-static" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-clang-cl-release-shared" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-clang-cl-release-static" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-clang-cl-release-static-system" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-clang-debug-shared" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-clang-debug-static" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-clang-release-shared" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-clang-release-static" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-gcc-debug-shared" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-gcc-debug-static" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-gcc-release-shared" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-gcc-release-static" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-msvc-debug-shared" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-msvc-debug-static" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-msvc-release-shared" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-msvc-release-static" />
       <file path="$PROJECT_DIR$/docs" />
     </excludeRoots>
   </component>

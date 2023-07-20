@@ -42,7 +42,7 @@ void ol::InputGathererKeyboard::m_fTerminate()
     // Instead of calling off to PostThreadMessage etc., use callback from jthread.
     if (this->m_bAllowConsuming)
     {
-        ::PostThreadMessageW(GetThreadId(this->m_thInputGatherThread.native_handle()), WM_QUIT, reinterpret_cast<WPARAM>(nullptr), reinterpret_cast<LPARAM>(nullptr));
+        ::PostThreadMessageW(GetThreadId((HANDLE)this->m_thInputGatherThread.native_handle()), WM_QUIT, reinterpret_cast<WPARAM>(nullptr), reinterpret_cast<LPARAM>(nullptr));
         this->m_fEndHook();
     }
     else
