@@ -27,9 +27,6 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build --config Release
 ```
 
-# CMake Files Style
-- Use `TRUE` and `FALSE` rather than `ON` or `OFF`
-
 # Testing Framework
 Read more about which dependency was chosen [here](docs/testing_frameworks.md)
 

@@ -37,7 +37,7 @@ void ol::InputGathererMouse::m_fTerminate()
 
     if (this->m_bAllowConsuming)
     {
-        ::PostThreadMessageW(GetThreadId(this->m_thInputGatherThread.native_handle()), WM_QUIT, reinterpret_cast<WPARAM>(nullptr), reinterpret_cast<LPARAM>(nullptr));
+        ::PostThreadMessageW(GetThreadId((HANDLE)this->m_thInputGatherThread.native_handle()), WM_QUIT, reinterpret_cast<WPARAM>(nullptr), reinterpret_cast<LPARAM>(nullptr));
         this->m_fEndHook();
     }
     else

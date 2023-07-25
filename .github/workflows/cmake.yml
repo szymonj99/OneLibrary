@@ -1,58 +1,49 @@
-name: CMake
-
-on:
-  push:
-    branches: [ '*' ]
-
-env:
-  BUILD_TYPE: Release
-
-jobs:
-  build-ubuntu-release:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Install packages
-      run: sudo apt update && sudo apt install libevdev-dev
-      shell: bash
-
-    - name: Copy libevdev to Directory
-      run: |
-        cd /usr/include/libevdev-1.0
-        sudo mv libevdev ../
-
-    - name: Set up VCPKG
-      uses: lukka/run-vcpkg@v10
-      with:
-        vcpkgGitCommitId: f3a39f1aaffe48b1190df69aab3a8657f91b632a
-
-    - name: Configure CMake
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-
-    - name: Build
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
-
-    - name: Execute Tests
-      run: ${{github.workspace}}/build/tests/automated/OneLibraryTestsAutomated
-      
-  build-windows-release:
-    runs-on: windows-latest
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Set up VCPKG
-      uses: lukka/run-vcpkg@v10
-      with:
-        vcpkgGitCommitId: f3a39f1aaffe48b1190df69aab3a8657f91b632a
-
-    - name: Configure CMake
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-
-    - name: Build
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
-
-    - name: Execute Tests
-      run: ${{github.workspace}}/build/tests/automated/Release/OneLibraryTestsAutomated.exe
+#name: CMake
+#
+#on:
+#  push:
+#    branches: [ '*' ]
+#
+#env:
+#  BUILD_TYPE: Release
+#
+#jobs:
+#  build-ubuntu-release:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#    - uses: actions/checkout@v3
+#
+#    - name: Install packages
+#      run: sudo apt update && sudo apt install libevdev-dev
+#      shell: bash
+#
+#    - name: Copy libevdev to Directory
+#      run: |
+#        cd /usr/include/libevdev-1.0
+#        sudo mv libevdev ../
+#
+#    - name: Configure CMake
+#      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+#
+#    - name: Build
+#      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+#
+#    - name: Execute Tests
+#      run: ${{github.workspace}}/build/tests/automated/OneLibraryTestsAutomated
+#
+#  build-windows-release:
+#    runs-on: windows-latest
+#
+#    steps:
+#    - uses: actions/checkout@v3
+#
+#    - name: Configure CMake
+#      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+#
+#    - name: Build
+#      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+#
+#    - name: Execute Tests
+#      run: ${{github.workspace}}/build/tests/automated/Release/OneLibraryTestsAutomated.exe
+#

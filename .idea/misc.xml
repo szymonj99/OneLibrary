@@ -8,10 +8,24 @@
       <file path="$PROJECT_DIR$/tests" />
     </sourceRoots>
     <libraryRoots>
+      <file path="D:/CPM_CACHE/backward-cpp/57e47d627be8d0001f912d2a0ccedf3b240d0e2b" />
+      <file path="D:/CPM_CACHE/catch2/fc2d6e70e6b1b691860849b5eeca5a7b84d30f6f" />
       <file path="$PROJECT_DIR$/vcpkg_installed" />
     </libraryRoots>
     <excludeRoots>
       <file path="$PROJECT_DIR$/.github" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-clang-cl-release-static" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-clang-cl-release-static-system" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-clang-debug-static" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-clang-release-static" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-clangcl-debug-static" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-clangcl-msvc-debug-static" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-clangcl-msvc-release-static" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-clangcl-release-static" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-gcc-debug-static" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-gcc-release-static" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-msvc-debug-static" />
+      <file path="$PROJECT_DIR$/cmake-build-windows-msvc-release-static" />
       <file path="$PROJECT_DIR$/docs" />
     </excludeRoots>
   </component>

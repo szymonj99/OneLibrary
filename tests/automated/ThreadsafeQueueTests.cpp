@@ -23,7 +23,7 @@ TEST_CASE("Interrupting while Getting from an empty queue raises an exception", 
     bool ex = false;
     try
     {
-        queue.Get();
+        (void)queue.Get();
     }
     catch (const ol::InterruptException& e)
     {
