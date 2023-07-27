@@ -362,6 +362,6 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 out
-[Bb]uild
+[Bb]uild*
 cmake-build*
 [Cc][Pp][Mm]_*.cmake

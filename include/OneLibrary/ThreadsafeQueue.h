@@ -9,6 +9,7 @@
 
 namespace ol
 {
+    // TODO: Add a no-exceptions version of this.
     template <typename T>
     /**
      * A thread-safe wrapper around std::queue, which can act as a buffer in a producer-consumer scenario.

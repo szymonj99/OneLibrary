@@ -2,7 +2,7 @@ set(TESTS_MANUAL_NAME OneLibraryTestsManual)
 
 add_executable(${TESTS_MANUAL_NAME} KeyboardTests.cpp MouseTests.cpp)
 
-target_link_libraries(${TESTS_MANUAL_NAME} PRIVATE OneLibrary Catch2::Catch2WithMain)
+target_link_libraries(${TESTS_MANUAL_NAME} PRIVATE OneLibrary Catch2::Catch2WithMain Threads::Threads)
 
 target_compile_features(${TESTS_MANUAL_NAME} PRIVATE cxx_std_20)
 

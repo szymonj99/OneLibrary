@@ -1,4 +1,8 @@
-cmake_minimum_required (VERSION 3.19 FATAL_ERROR)
+cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
+
+# Let's disable in-source builds.
+set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
+set(CMAKE_DISABLE_SOURCE_CHANGES  ON)
 
 set(LIBRARY_NAME OneLibrary)
 set(LIBRARY_VERSION 0.0.4)
@@ -11,11 +15,11 @@ set(IGNORE_C_FLAGS ${CMAKE_C_FLAGS})
 
 option(ONELIBRARY_BUILD_TESTS "Build the tests" ON)
 option(ONELIBRARY_USE_BACKWARDCPP "Compile OneLibrary including Backward-CPP (only active in `Debug` mode)" ON)
-option(ONELIBRARY_LIB_TYPE "Can be set to either STATIC or SHARED. Default is not set, meaning the default will be provided by CMake's BUILD_SHARED_LIBS variable.")
+option(ONELIBRARY_LIB_TYPE "Can be set to either STATIC or SHARED. Default is not set, meaning the default will be provided by CMake's BUILD_SHARED_LIBS variable. If provided, overwrites BUILD_SHARED_LIBS." OFF)
 
 if(ONELIBRARY_CLANG_CL_WORKAROUND)
     # TODO: Do not set this for ClangCL-MSVC (Visual Studio generator). Only set for ClangCL when using MinGW build generator.
-    set(CMAKE_CXX_FLAGS "-m64")
+    #set(CMAKE_CXX_FLAGS "-m64")
     # LLVM-mt needs to be set before a call to `project()`, otherwise the ClangCL compiler messes up and becomes a PITA.
     find_program(LLVM_MT_PROGRAM llvm-mt)
     if(LLVM_MT_PROGRAM)
@@ -24,6 +28,12 @@ if(ONELIBRARY_CLANG_CL_WORKAROUND)
         message(FATAL_ERROR "llvm-mt is not found. Can't compile with clang-cl without it.")
     endif()
 endif()
+
+# MinGW doesn't support this.
+# Unix Makefiles don't support this.
+# GCC doesn't support this.
+# Ninja doesn't support this.
+#set(CMAKE_GENERATOR_PLATFORM x64)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
@@ -45,9 +55,17 @@ add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS src/OneLibrary/*.cpp)
 file(GLOB_RECURSE HEADER_FILES CONFIGURE_DEPENDS include/OneLibrary/*.h)
 target_sources(${PROJECT_NAME} PRIVATE ${SOURCE_FILES} PUBLIC ${HEADER_FILES})
+# TODO: Separate the public and private headers better;
+# An end-user probably doesn't need something like InputTable.h
 
 include(GNUInstallDirs)
 include(GetCPM)
+
+message(STATUS "Setting pthread")
+set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
+find_package(Threads REQUIRED)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
 
 if(ONELIBRARY_USE_BACKWARDCPP AND CMAKE_BUILD_TYPE STREQUAL "Debug")
     CPMAddPackage("gh:bombela/backward-cpp#65a769ffe77cf9d759d801bc792ac56af8e911a3")
@@ -57,11 +75,6 @@ endif()
 
 if(ONELIBRARY_CLANG_CL_WORKAROUND)
     target_compile_options(${PROJECT_NAME} PUBLIC "/EHsc")
-endif()
-
-if(ONELIBRARY_CLANG_WORKAROUND)
-    # Clang only, although using it with GCC doesn't hurt.
-    target_link_libraries(${PROJECT_NAME} PRIVATE pthread)
 endif()
 
 # I'll do more research as to what this actually does.
@@ -107,25 +120,19 @@ elseif(CMAKE_HOST_APPLE)
     target_compile_options(${PROJECT_NAME} PRIVATE "-Wfatal-errors")
 elseif(CMAKE_HOST_LINUX)
     target_compile_definitions(${PROJECT_NAME} PRIVATE OS_LINUX=1)
-    target_compile_options(${PROJECT_NAME} PRIVATE "-pthread" "-Wfatal-errors")
+    target_compile_options(${PROJECT_NAME} PRIVATE "-Wfatal-errors")
 else()
     target_compile_definitions(${PROJECT_NAME} PRIVATE OS_ERROR=1)
 endif()
 
 install(TARGETS ${PROJECT_NAME} PUBLIC_HEADER DESTINATION include)
 
-find_program(CCACHE_PROGRAM ccache)
-find_program(SCCACHE_PROGRAM sccache)
-
-if(CCACHE_PROGRAM)
-    message(STATUS "Found ccache")
-    set(CMAKE_CXX_COMPILER_LAUNCHER "${CCACHE_PROGRAM}")
-endif()
-
-if(SCCACHE_PROGRAM)
-    message(STATUS "Found sccache")
-    # TODO: This breaks ClangCL build on Windows. https://github.com/mozilla/sccache/issues/1843
-    #set(CMAKE_CXX_COMPILER_LAUNCHER "${SCCACHE_PROGRAM}")
+# ccache isn't necessary here as sccache is an improvement over it.
+# We don't use sccache as it has an issue on ClangCL on Windows: https://github.com/mozilla/sccache/issues/1843
+find_program(BUILDCACHE_PROGRAM buildcache)
+if(BUILDCACHE_PROGRAM)
+    message(STATUS "Found buildcache")
+    set(CMAKE_CXX_COMPILER_LAUNCHER ${BUILDCACHE_PROGRAM})
 endif()
 
 # Taken from: https://github.com/ChrisThrasher/argon/blob/84fcce3c2c66ae87ba95e65ea587c985c620ce87/CMakeLists.txt#L23
@@ -143,3 +150,6 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
         add_subdirectory(tests)
     endif()
 endif()
+
+# TODO: Add -m64 or /MACHINE:x64 or x64, (or `set(CMAKE_GENERATOR_PLATFORM x64)` BEFORE project call)
+# set_target_properties(MyTarget PROPERTIES COMPILE_FLAGS "-m32" LINK_FLAGS "-m32")

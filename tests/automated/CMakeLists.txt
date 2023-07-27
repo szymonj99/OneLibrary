@@ -2,7 +2,7 @@ set(TESTS_AUTOMATED_NAME OneLibraryTestsAutomated)
 
 add_executable(${TESTS_AUTOMATED_NAME} ThreadsafeQueueTests.cpp InputTableTests.cpp)
 
-target_link_libraries(${TESTS_AUTOMATED_NAME} PRIVATE OneLibrary Catch2::Catch2WithMain)
+target_link_libraries(${TESTS_AUTOMATED_NAME} PRIVATE OneLibrary Catch2::Catch2WithMain Threads::Threads)
 
 target_compile_features(${TESTS_AUTOMATED_NAME} PRIVATE cxx_std_20)
 
