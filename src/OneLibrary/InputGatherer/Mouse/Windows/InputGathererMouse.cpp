@@ -66,9 +66,9 @@ void ol::InputGathererMouse::m_fStartHook()
         // Do I need to do this for Raw Input as well?
         // Force the system to create a message queue.
         // https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-postthreadmessagea
-        ::PeekMessageW(&msg, nullptr, WM_USER, WM_USER, PM_NOREMOVE);
+        ::PeekMessage(&msg, nullptr, WM_USER, WM_USER, PM_NOREMOVE);
         // TODO: Check if this is okay or if it's preferred to call &Instance->LowLevelHookProcedure as an example.
-        this->m_pHook = ::SetWindowsHookExW(WH_MOUSE_LL, &ol::InputGathererMouse::LowLevelHookProcedure, nullptr, 0);
+        this->m_pHook = ::SetWindowsHookEx(WH_MOUSE_LL, &ol::InputGathererMouse::LowLevelHookProcedure, nullptr, 0);
         threadInitialised.release();
         while (this->m_bRunning) { this->m_fWaitForLowLevelHook(); }
     });
@@ -78,10 +78,10 @@ void ol::InputGathererMouse::m_fStartHook()
 void ol::InputGathererMouse::m_fWaitForLowLevelHook()
 {
     ::MSG msg {};
-    const auto kResult = ::GetMessageW(&msg, nullptr, WM_QUIT, WM_MOUSELAST);
+    const auto kResult = ::GetMessage(&msg, nullptr, WM_QUIT, WM_MOUSELAST);
     if (kResult > 0)
     {
-        ::DispatchMessageW(&msg);
+        ::DispatchMessage(&msg);
     }
     else if (kResult == 0) // WM_QUIT message
     {
@@ -224,13 +224,17 @@ void ol::InputGathererMouse::m_fStartRawInput()
     this->m_thInputGatherThread = std::jthread([&]
     {
         this->m_wRawInputWindowClass.hInstance = nullptr;
+#ifdef UNICODE
         this->m_wRawInputWindowClass.lpszClassName = L"OneControl - Mouse Procedure";
+#else
+        this->m_wRawInputWindowClass.lpszClassName = "OneControl - Mouse Procedure";
+#endif
         this->m_wRawInputWindowClass.lpfnWndProc = ol::InputGathererMouse::RawInputProcedure;
-        ::RegisterClassW(&this->m_wRawInputWindowClass);
+        ::RegisterClassEx(&this->m_wRawInputWindowClass);
 
         // Create message window:
         // Invisible window that we use to get raw input messages.
-        this->m_hRawInputMessageWindow = ::CreateWindowW(this->m_wRawInputWindowClass.lpszClassName, nullptr, 0, 0, 0, 0, 0, HWND_MESSAGE, nullptr, this->m_wRawInputWindowClass.hInstance, nullptr);
+        this->m_hRawInputMessageWindow = ::CreateWindowEx(0, this->m_wRawInputWindowClass.lpszClassName, nullptr, 0, 0, 0, 0, 0, HWND_MESSAGE, nullptr, this->m_wRawInputWindowClass.hInstance, nullptr);
 
         ::RAWINPUTDEVICE rawInput[1]{};
 
@@ -252,7 +256,7 @@ void ol::InputGathererMouse::m_fStartRawInput()
         // Although I'm not sure if this is necessary for raw input, we do what we did for low level hooks.
         // We force the system to create a message queue on this thread.
         ::MSG msg{};
-        ::PeekMessageW(&msg, this->m_hRawInputMessageWindow, WM_USER, WM_USER, PM_NOREMOVE);
+        ::PeekMessage(&msg, this->m_hRawInputMessageWindow, WM_USER, WM_USER, PM_NOREMOVE);
         rawInputInitialised.release();
         while (this->m_bRunning) { this->m_fWaitForRawInput(); }
     });
@@ -264,14 +268,14 @@ void ol::InputGathererMouse::m_fWaitForRawInput()
     ::MSG msg {};
     // Using the raw input message window here is okay as we have registered it as a RIDEV_INPUTSINK
     // Unlike Low Level hooks, where the hWnd has to be nullptr.
-    const auto kResult = ::GetMessageW(&msg, this->m_hRawInputMessageWindow, WM_QUIT, WM_INPUT);
+    const auto kResult = ::GetMessage(&msg, this->m_hRawInputMessageWindow, WM_QUIT, WM_INPUT);
 
     if (kResult > 0)
     {
         // Note: Calling TranslateMessage(&msg); is only necessary for keyboard input.
         // https://learn.microsoft.com/en-us/windows/win32/learnwin32/window-messages
         // Hand off every message to our Raw Input Procedure
-        ::DispatchMessageW(&msg);
+        ::DispatchMessage(&msg);
     }
     else if (kResult == 0) // WM_QUIT message
     {

@@ -74,9 +74,9 @@ void ol::InputGathererKeyboard::m_fStartHook()
         // Do I need to do this for Raw Input as well?
         // Force the system to create a message queue.
         // https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-postthreadmessagea
-        ::PeekMessageW(&msg, nullptr, WM_USER, WM_USER, PM_NOREMOVE);
+        ::PeekMessage(&msg, nullptr, WM_USER, WM_USER, PM_NOREMOVE);
         // TODO: Check if calling &Instance::LowLevelHookProcedure would make sense here.
-        this->m_pHook = ::SetWindowsHookExW(WH_KEYBOARD_LL, &ol::InputGathererKeyboard::LowLevelHookProcedure, nullptr, 0);
+        this->m_pHook = ::SetWindowsHookEx(WH_KEYBOARD_LL, &ol::InputGathererKeyboard::LowLevelHookProcedure, nullptr, 0);
         hookInitialised.release();
 
         while (this->m_bRunning) { this->m_fWaitForLowLevelHook(); }
@@ -92,13 +92,13 @@ void ol::InputGathererKeyboard::m_fWaitForLowLevelHook()
     // It would be nice to be able to filter this to only WM_KEYFIRST and WM_KEYLAST messages, but as we are calling `PostThreadMessage`, it may not be possible.
     // Windows docs say that no matter the filter, WM_QUIT messages would _not_ be filtered out.
     // So, I have no idea why they *are* being filtered out unless allowed in the filter.
-    const auto kResult = ::GetMessageW(&msg, nullptr, WM_QUIT, WM_KEYLAST);
+    const auto kResult = ::GetMessage(&msg, nullptr, WM_QUIT, WM_KEYLAST);
     if (kResult > 0)
     {
         // Do we need to call TranslateMessage?
         // In theory, yes but let's try doing it without it.
         // Could be better that way.
-        ::DispatchMessageW(&msg);
+        ::DispatchMessage(&msg);
     }
     else if (kResult == 0) // WM_QUIT message
     {
@@ -209,12 +209,17 @@ void ol::InputGathererKeyboard::m_fStartRawInput()
         std::stop_callback stopCallback{kStopToken, [&]{ this->Shutdown(); }};
 
         this->m_wRawInputWindowClass.hInstance = nullptr;
+#ifdef UNICODE
         this->m_wRawInputWindowClass.lpszClassName = L"OneControl - Keyboard Procedure";
+#else
+        this->m_wRawInputWindowClass.lpszClassName = "OneControl - Keyboard Procedure";
+#endif
         this->m_wRawInputWindowClass.lpfnWndProc = ol::InputGathererKeyboard::RawInputProcedure;
-        ::RegisterClassW(&this->m_wRawInputWindowClass);
+        ::RegisterClassEx(&this->m_wRawInputWindowClass);
         // Create the invisible window that we use to get raw input messages.
         // TODO: Figure out why calling RegisterClassExW and CreateWindowExW with WNDCLASSEXW gave us error code 87...
-        this->m_hRawInputMessageWindow = ::CreateWindowW(this->m_wRawInputWindowClass.lpszClassName, nullptr, 0, 0, 0, 0, 0, HWND_MESSAGE, nullptr, this->m_wRawInputWindowClass.hInstance, nullptr);
+        //this->m_hRawInputMessageWindow = ::CreateWindowEx(this->m_wRawInputWindowClass.lpszClassName, nullptr, 0, 0, 0, 0, 0, HWND_MESSAGE, nullptr, this->m_wRawInputWindowClass.hInstance, nullptr);
+        this->m_hRawInputMessageWindow = ::CreateWindowEx(0, this->m_wRawInputWindowClass.lpszClassName, nullptr, 0, 0, 0, 0, 0, HWND_MESSAGE, nullptr, this->m_wRawInputWindowClass.hInstance, nullptr);
         ::RAWINPUTDEVICE rawInput[1]{};
         rawInput[0].usUsagePage = HID_USAGE_PAGE_GENERIC;
         rawInput[0].usUsage = HID_USAGE_GENERIC_KEYBOARD;
@@ -230,7 +235,7 @@ void ol::InputGathererKeyboard::m_fStartRawInput()
         // Although I'm not sure if this is necessary for raw input, we do what we did for low level hooks.
         // We force the system to create a message queue on this thread.
         ::MSG msg{};
-        ::PeekMessageW(&msg, this->m_hRawInputMessageWindow, WM_USER, WM_USER, PM_NOREMOVE);
+        ::PeekMessage(&msg, this->m_hRawInputMessageWindow, WM_USER, WM_USER, PM_NOREMOVE);
         rawInputInitialised.release();
         while (this->m_bRunning) { this->m_fWaitForRawInput(); }
     });
@@ -243,14 +248,14 @@ void ol::InputGathererKeyboard::m_fWaitForRawInput()
     ::MSG msg{};
     // Using the raw input message window here is okay as we have registered it as a RIDEV_INPUTSINK
     // Unlike Low Level hooks, where the hWnd has to be nullptr.
-    const auto kResult = ::GetMessageW(&msg, this->m_hRawInputMessageWindow, WM_QUIT, WM_INPUT);
+    const auto kResult = ::GetMessage(&msg, this->m_hRawInputMessageWindow, WM_QUIT, WM_INPUT);
     if (kResult > 0)
     {
         // Note: Calling TranslateMessage(&msg); is only necessary for keyboard input.
         // https://learn.microsoft.com/en-us/windows/win32/learnwin32/window-messages
         // However, let's try not using it for the time being.
         // Hand off every message to our Raw Input Procedure
-        ::DispatchMessageW(&msg);
+        ::DispatchMessage(&msg);
     }
     else if (kResult == 0) // WM_QUIT message
     {

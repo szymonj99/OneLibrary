@@ -11,7 +11,7 @@ class InterruptException : public std::exception
 {
 public:
     InterruptException() noexcept {}
-    const char* what() const noexcept override
+    [[nodiscard]] const char* what() const noexcept override
     {
         return "Interrupted";
     }

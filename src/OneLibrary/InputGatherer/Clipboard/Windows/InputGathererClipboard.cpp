@@ -19,15 +19,19 @@ ol::InputGathererClipboard::InputGathererClipboard(const bool kAllowConsuming)
         // Create the window here and register it to receive clipboard messages
         this->m_wClipboardWindowClass.lpfnWndProc = ol::InputGathererClipboard::WndProc;
         this->m_wClipboardWindowClass.hInstance = nullptr;
+#ifdef UNICODE
         this->m_wClipboardWindowClass.lpszClassName = L"OneLibrary - Clipboard Procedure";
-        ::RegisterClassW(&this->m_wClipboardWindowClass);
+#else
+        this->m_wClipboardWindowClass.lpszClassName = "OneLibrary - Clipboard Procedure";
+#endif
+        ::RegisterClassEx(&this->m_wClipboardWindowClass);
 
-        this->m_hClipboardMessageWindow = ::CreateWindowExW(WS_EX_TOOLWINDOW, this->m_wClipboardWindowClass.lpszClassName, nullptr, 0, 0, 0, 0, 0, nullptr, nullptr, nullptr, nullptr);
+        this->m_hClipboardMessageWindow = ::CreateWindowEx(WS_EX_TOOLWINDOW, this->m_wClipboardWindowClass.lpszClassName, nullptr, 0, 0, 0, 0, 0, nullptr, nullptr, nullptr, nullptr);
 
         ::AddClipboardFormatListener(this->m_hClipboardMessageWindow);
 
         ::MSG msg{};
-        ::PeekMessageW(&msg, this->m_hClipboardMessageWindow, WM_USER, WM_USER, PM_NOREMOVE);
+        ::PeekMessage(&msg, this->m_hClipboardMessageWindow, WM_USER, WM_USER, PM_NOREMOVE);
         threadInitialised.release();
         while (this->m_bRunning) { this->m_fWaitForClipboard(); }
     });
@@ -42,14 +46,14 @@ void ol::InputGathererClipboard::m_fWaitForClipboard()
     ::MSG msg{};
     // Using the raw input message window here is okay as we have registered it as a RIDEV_INPUTSINK
     // Unlike Low Level hooks, where the hWnd has to be nullptr.
-    const auto kResult = ::GetMessageW(&msg, this->m_hClipboardMessageWindow, WM_QUIT, WM_CLIPBOARDUPDATE);
+    const auto kResult = ::GetMessage(&msg, this->m_hClipboardMessageWindow, WM_QUIT, WM_CLIPBOARDUPDATE);
     if (kResult > 0)
     {
         // Note: Calling TranslateMessage(&msg); is only necessary for keyboard input.
         // https://learn.microsoft.com/en-us/windows/win32/learnwin32/window-messages
         // However, let's try not using it for the time being.
         // Hand off every message to our Raw Input Procedure
-        ::DispatchMessageW(&msg);
+        ::DispatchMessage(&msg);
     }
     else if (kResult == 0) // WM_QUIT message
     {

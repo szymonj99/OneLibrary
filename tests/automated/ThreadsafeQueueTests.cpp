@@ -18,6 +18,7 @@ TEST_CASE("Interrupting while Getting from an empty queue raises an exception", 
 {
     ol::ThreadsafeQueue<uint32_t> queue{};
 
+    // TODO: Rework this to not have a hard-coded timer; but instead have the main thread signal the std::jthread that it can interrupt.
     std::jthread th{[&](){ std::this_thread::sleep_for(std::chrono::seconds{1}); queue.Interrupt(); }};
 
     bool ex = false;

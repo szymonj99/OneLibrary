@@ -1,0 +1,242 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 26,
+    "patch": 0
+  },
+  "configurePresets": [
+	{
+      "name": "debug",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "release",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "static",
+      "hidden": true,
+      "cacheVariables": {
+        "BUILD_SHARED_LIBS": {
+          "type": "BOOL",
+          "value": "OFF"
+        }
+      }
+    },
+    {
+      "name": "shared",
+      "hidden": true,
+      "cacheVariables": {
+        "BUILD_SHARED_LIBS": {
+          "type": "BOOL",
+          "value": "ON"
+        }
+      }
+    },
+    {
+      "name": "common",
+      "hidden": true,
+      "errors": { },
+      "warnings": { },
+      "cacheVariables": {
+        "PROJECT_CXX_FLAGS"
+        "CMAKE_CXX_FLAGS_INIT": "$env{PREPEND_CMAKE_CXX_FLAGS_INIT} $env{CMAKE_CXX_FLAGS_INIT} $env{APPEND_CMAKE_CXX_FLAGS_INIT} /DUNICODE"
+      },
+      "vendor": {
+        "microsoft.com/VisualStudioSettings/CMake/3.26.0": {
+          "hostOS": "$env{INTELLISENSE_HOST_OS}",
+          "intelliSenseMode": "$env{INTELLISENSE_TARGET_PLATFORM}-${INTELLISENSE_PROJECT_COMPILER}-${INTELLISENSE_PROJECT_ARCHITECTURE}"
+        }
+      }
+    },
+    {
+      "name": "platform-common",
+      "inherits": [ "common" ]
+    },
+    {
+      "name": "platform-win",
+      "hidden": true,
+      "inherits": [ "platform-common" ],
+      "environment": {
+        "INTELLISENSE_HOST_OS": "Windows",
+        "INTELLISENSE_TARGET_PLATFORM": "windows",
+        "INTELLISENSE_PROJECT_ARCHITECTURE": "x64"
+      },
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS_INIT": "$env{CMAKE_CXX_FLAGS_INIT} /DUNICODE"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "generator-ninja",
+      "generator": "Ninja"
+    },
+    {
+      "name": "compiler-msvc",
+      "hidden": true,
+      "environment": {
+        "CC": "cl",
+        "CXX": "cl",
+        "INTELLISENSE_PROJECT_COMPILER": "msvc"
+      }
+    },
+    {
+      "name": "compiler-clang",
+      "hidden": true,
+      "environment": {
+        "CC": "clang",
+        "CXX": "clang++",
+        "INTELLISENSE_PROJECT_COMPILER": "clang"
+      }
+    },
+    {
+      "name": "compiler-clang-cl",
+      "hidden": true,
+      "environment": {
+        "CC": "clang-cl",
+        "CXX": "clang-cl",
+        "INTELLISENSE_PROJECT_COMPILER": "clang"
+      }
+    },
+    {
+      "name": "compiler-gcc",
+      "hidden": true,
+      "environment": {
+        "CC": "gcc",
+        "CXX": "g++",
+        "INTELLISENSE_PROJECT_COMPILER": "gcc"
+      }
+    },
+    {
+      "name": "configure-win-vs-debug-msvc-static",
+      "inherits": [
+        "platform-win",
+        "generator-ninja",
+        "debug",
+        "compiler-msvc",
+        "static"
+      ],
+      "binaryDir": "${sourceDir}/build/win-vs-debug-msvc-static"
+    },
+    {
+      "name": "configure-win-vs-debug-msvc-shared",
+      "inherits": [
+        "platform-win",
+        "generator-ninja",
+        "debug",
+        "compiler-msvc",
+        "shared"
+      ],
+      "binaryDir": "${sourceDir}/build/win-vs-debug-msvc-shared"
+    },
+    {
+      "name": "configure-win-vs-release-msvc-static",
+      "inherits": [
+        "platform-win",
+        "generator-ninja",
+        "release",
+        "compiler-msvc",
+        "static"
+      ],
+      "binaryDir": "${sourceDir}/build/win-vs-release-msvc-static"
+    },
+    {
+      "name": "configure-win-vs-release-msvc-shared",
+      "inherits": [
+        "platform-win",
+        "generator-ninja",
+        "release",
+        "compiler-msvc",
+        "shared"
+      ],
+      "binaryDir": "${sourceDir}/build/win-vs-release-msvc-shared"
+    },
+    {
+      "name": "configure-win-ninja-debug-msvc-static",
+      "inherits": [
+        "platform-win",
+        "generator-ninja",
+        "debug",
+        "compiler-msvc",
+        "static"
+      ],
+      "binaryDir": "${sourceDir}/build/win-ninja-debug-msvc-static"
+    },
+    {
+      "name": "configure-win-ninja-debug-msvc-shared",
+      "inherits": [
+        "platform-win",
+        "generator-ninja",
+        "debug",
+        "compiler-msvc",
+        "shared"
+      ],
+      "binaryDir": "${sourceDir}/build/win-ninja-debug-msvc-shared"
+    },
+    {
+      "name": "configure-win-ninja-release-msvc-static",
+      "inherits": [
+        "platform-win",
+        "generator-ninja",
+        "release",
+        "compiler-msvc",
+        "static"
+      ],
+      "binaryDir": "${sourceDir}/build/win-ninja-release-msvc-static"
+    },
+    {
+      "name": "configure-win-ninja-release-msvc-shared",
+      "inherits": [
+        "platform-win",
+        "generator-ninja",
+        "release",
+        "compiler-msvc",
+        "shared"
+      ],
+      "binaryDir": "${sourceDir}/build/win-ninja-release-msvc-shared"
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "win-vs-debug-msvc-static",
+      "displayName": "Windows (Visual Studio, Debug, MSVC, Static)",
+      "configurePreset": "configure-win-vs-debug-msvc-static"
+    },
+    {
+      "name": "win-vs-debug-msvc-shared",
+      "displayName": "Windows (Visual Studio, Debug, MSVC, Shared)",
+      "configurePreset": "configure-win-vs-debug-msvc-shared"
+    },
+    {
+      "name": "win-vs-release-msvc-static",
+      "displayName": "Windows (Visual Studio, Release, MSVC, Static)",
+      "configurePreset": "configure-win-vs-release-msvc-static"
+    },
+    {
+      "name": "win-vs-release-msvc-shared",
+      "displayName": "Windows (Visual Studio, Release, MSVC, Shared)",
+      "configurePreset": "configure-win-vs-release-msvc-shared"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "unit",
+      "displayName": "Unit Tests",
+      "description": "Runs tests that do not require any input hooking.",
+      "configurePreset": "configure-win-vs-debug-msvc-static",
+      "output": { "outputOnFailure": true },
+      "execution": { "noTestsAction": "error", "stopOnFailure": true }
+    }
+  ]
+}

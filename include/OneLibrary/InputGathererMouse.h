@@ -14,7 +14,7 @@ namespace ol
         std::jthread m_thInputGatherThread;
         HHOOK m_pHook = nullptr;
 
-        WNDCLASS m_wRawInputWindowClass{};
+        WNDCLASSEX m_wRawInputWindowClass{};
         HWND m_hRawInputMessageWindow{};
 
         void m_fStartHook();

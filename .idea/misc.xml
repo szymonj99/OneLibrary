@@ -10,6 +10,7 @@
     <excludeRoots>
       <file path="$PROJECT_DIR$/.github" />
       <file path="$PROJECT_DIR$/build" />
+      <file path="$PROJECT_DIR$/cmake-build-release-msvc---x64" />
       <file path="$PROJECT_DIR$/cmake-build-windows-clang-cl-release-static" />
       <file path="$PROJECT_DIR$/cmake-build-windows-clang-cl-release-static-system" />
       <file path="$PROJECT_DIR$/cmake-build-windows-clang-debug-static" />

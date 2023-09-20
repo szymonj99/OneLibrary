@@ -10,6 +10,7 @@
 namespace ol
 {
     // TODO: Add a no-exceptions version of this.
+    // TODO: Use std::variant or std::optional potentially?
     template <typename T>
     /**
      * A thread-safe wrapper around std::queue, which can act as a buffer in a producer-consumer scenario.
@@ -49,6 +50,7 @@ namespace ol
 
             return value;
         };
+
         // We will do this as a pass-by-value, as a few conversations on stack overflow suggested that since this container
         // in theory owns the objects, it's the best choice.
         // Otherwise, we have to mess with std::reference_wrapper<T> or lifetimes. Yuck!
@@ -67,7 +69,7 @@ namespace ol
         };
 
         /**
-         * Makes all current (and I think future?) callers of `Get()` to raise an InterruptException. This can signal that the callers need to exit.
+         * Makes all current and future callers of `Get()` throw an InterruptException. This can signal that the callers need to exit.
          */
         void Interrupt() noexcept
         {

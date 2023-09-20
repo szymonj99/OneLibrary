@@ -2,6 +2,7 @@
 
 #include <unordered_map>
 #include <cstdint>
+
 #include <OneLibrary/Enums.h>
 
 // TODO: Make this better. Add a wrapper that would add the relevant keys to both maps, eliminating programmer-error.
